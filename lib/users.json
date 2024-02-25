@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Elian Cheng",
+    "email": "admin@test.com",
+    "password": "Test1234*",
+    "phone": "68245456502",
+    "role": "admin"
+  },
+  {
+    "name": "Jane Doe",
+    "email": "user@test.com",
+    "password": "Test1234*",
+    "phone": "68245456502",
+    "role": "user"
+  },
+  {
+    "name": "John Doe",
+    "email": "user@gmail.com",
+    "password": "Test1234*",
+    "phone": "68245456502",
+    "role": "user"
+  }
+]
