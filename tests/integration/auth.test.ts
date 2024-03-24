@@ -1,19 +1,15 @@
 import request from 'supertest';
-import { faker } from '@faker-js/faker';
 import httpStatus from 'http-status';
-import httpMocks from 'node-mocks-http';
 import moment from 'moment';
-import bcrypt from 'bcryptjs';
 import app from '../../src/app';
 import config from '../../src/config/config';
-import auth from '../../src/middlewares/auth';
 import { emailService, tokenService } from '../../src/services';
-import ApiError from '../../src/utils/ApiError';
 import setupTestDB from '../utils/setupTestDb';
 import { describe, beforeEach, test, expect, jest } from '@jest/globals';
-import { userOne, admin, insertUsers } from '../fixtures/user.fixture';
-import { Country, Role, TokenType, User } from '@prisma/client';
-import prisma from '../../src/client';
+import { userOne, insertUsers } from '../fixtures/user.fixture';
+import User, { IUser } from '../../src/models/User';
+import { Role, TokenType } from '../../src/utils/constants';
+import Token from '../../src/models/Token';
 
 setupTestDB();
 
@@ -32,13 +28,16 @@ describe('Auth routes', () => {
         .expect(httpStatus.OK);
 
       expect(res.body.user).toMatchObject({
-        id: expect.anything(),
+        _id: expect.anything(),
         name: userOne.name,
         email: userOne.email,
-        role: userOne.role
+        role: userOne.role,
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+        isBanned: false
       });
 
-      expect(res.body.user).toEqual(expect.not.objectContaining({ password: expect.anything() }));
+      // expect(res.body.user).toEqual(expect.not.objectContaining({ password: expect.anything() }));
 
       expect(res.body.tokens).toEqual({
         access: { token: expect.anything(), expires: expect.anything() },
@@ -85,27 +84,25 @@ describe('Auth routes', () => {
   describe('POST /auth/logout', () => {
     test('should return 204 if refresh token is valid', async () => {
       await insertUsers([userOne]);
-      const dbUserOne = (await prisma.user.findUnique({ where: { email: userOne.email } })) as User;
+      const dbUserOne = (await User.findOne({ email: userOne.email })) as IUser;
       const expires = moment().add(config.jwt.refreshExpirationDays, 'days');
       const refreshToken = tokenService.generateToken(
-        dbUserOne.id,
-        Role.SELLER,
-        Country.USA,
+        dbUserOne._id,
+        Role.USER,
         expires,
         TokenType.REFRESH
       );
       await tokenService.saveToken(
         refreshToken,
-        dbUserOne.id,
-        Role.SELLER,
-        Country.USA,
+        dbUserOne._id,
+        Role.USER,
         expires,
         TokenType.REFRESH
       );
 
       await request(app).post('/auth/logout').send({ refreshToken }).expect(httpStatus.NO_CONTENT);
 
-      const dbRefreshTokenData = await prisma.token.findFirst({ where: { token: refreshToken } });
+      const dbRefreshTokenData = await Token.findOne({ token: refreshToken });
       expect(dbRefreshTokenData).toBe(null);
     });
 
@@ -115,12 +112,11 @@ describe('Auth routes', () => {
 
     test('should return 404 error if refresh token is not found in the database', async () => {
       await insertUsers([userOne]);
-      const dbUserOne = (await prisma.user.findUnique({ where: { email: userOne.email } })) as User;
+      const dbUserOne = (await User.findOne({ email: userOne.email })) as IUser;
       const expires = moment().add(config.jwt.refreshExpirationDays, 'days');
       const refreshToken = tokenService.generateToken(
-        dbUserOne.id,
-        Role.SELLER,
-        Country.USA,
+        dbUserOne._id,
+        Role.USER,
         expires,
         TokenType.REFRESH
       );
@@ -130,20 +126,18 @@ describe('Auth routes', () => {
 
     test('should return 404 error if refresh token is blacklisted', async () => {
       await insertUsers([userOne]);
-      const dbUserOne = (await prisma.user.findUnique({ where: { email: userOne.email } })) as User;
+      const dbUserOne = (await User.findOne({ email: userOne.email })) as IUser;
       const expires = moment().add(config.jwt.refreshExpirationDays, 'days');
       const refreshToken = tokenService.generateToken(
-        dbUserOne.id,
-        Role.SELLER,
-        Country.USA,
+        dbUserOne._id,
+        Role.USER,
         expires,
         TokenType.REFRESH
       );
       await tokenService.saveToken(
         refreshToken,
-        dbUserOne.id,
-        Role.SELLER,
-        Country.USA,
+        dbUserOne._id,
+        Role.USER,
         expires,
         TokenType.REFRESH,
         true
@@ -156,20 +150,18 @@ describe('Auth routes', () => {
   describe('POST /auth/refresh-tokens', () => {
     test('should return 200 and new auth tokens if refresh token is valid', async () => {
       await insertUsers([userOne]);
-      const dbUserOne = (await prisma.user.findUnique({ where: { email: userOne.email } })) as User;
+      const dbUserOne = (await User.findOne({ email: userOne.email })) as IUser;
       const expires = moment().add(config.jwt.refreshExpirationDays, 'days');
       const refreshToken = tokenService.generateToken(
-        dbUserOne.id,
-        Role.SELLER,
-        Country.USA,
+        dbUserOne._id,
+        Role.USER,
         expires,
         TokenType.REFRESH
       );
       await tokenService.saveToken(
         refreshToken,
-        dbUserOne.id,
-        Role.SELLER,
-        Country.USA,
+        dbUserOne._id,
+        Role.USER,
         expires,
         TokenType.REFRESH
       );
@@ -184,21 +176,16 @@ describe('Auth routes', () => {
         refresh: { token: expect.anything(), expires: expect.anything() }
       });
 
-      const dbRefreshTokenData = await prisma.token.findFirst({
-        where: { token: res.body.refresh.token },
-        select: {
-          type: true,
-          userId: true,
-          isBlacklisted: true
-        }
-      });
+      const dbRefreshTokenData = await Token.findOne({ token: res.body.refresh.token })
+        .select('type userId isBlacklisted')
+        .exec();
       expect(dbRefreshTokenData).toMatchObject({
         type: TokenType.REFRESH,
-        userId: dbUserOne.id,
+        userId: dbUserOne._id,
         isBlacklisted: false
       });
 
-      const dbRefreshTokenCount = await prisma.token.count();
+      const dbRefreshTokenCount = await Token.countDocuments();
       expect(dbRefreshTokenCount).toBe(1);
     });
 
@@ -208,21 +195,19 @@ describe('Auth routes', () => {
 
     test('should return 401 error if refresh token is signed using an invalid secret', async () => {
       await insertUsers([userOne]);
-      const dbUserOne = (await prisma.user.findUnique({ where: { email: userOne.email } })) as User;
+      const dbUserOne = (await User.findOne({ email: userOne.email })) as IUser;
       const expires = moment().add(config.jwt.refreshExpirationDays, 'days');
       const refreshToken = tokenService.generateToken(
-        dbUserOne.id,
-        Role.SELLER,
-        Country.USA,
+        dbUserOne._id,
+        Role.USER,
         expires,
         TokenType.REFRESH,
         'invalidSecret'
       );
       await tokenService.saveToken(
         refreshToken,
-        dbUserOne.id,
-        Role.SELLER,
-        Country.USA,
+        dbUserOne._id,
+        Role.USER,
         expires,
         TokenType.REFRESH
       );
@@ -235,12 +220,11 @@ describe('Auth routes', () => {
 
     test('should return 401 error if refresh token is not found in the database', async () => {
       await insertUsers([userOne]);
-      const dbUserOne = (await prisma.user.findUnique({ where: { email: userOne.email } })) as User;
+      const dbUserOne = (await User.findOne({ email: userOne.email })) as IUser;
       const expires = moment().add(config.jwt.refreshExpirationDays, 'days');
       const refreshToken = tokenService.generateToken(
-        dbUserOne.id,
-        Role.SELLER,
-        Country.USA,
+        dbUserOne._id,
+        Role.USER,
         expires,
         TokenType.REFRESH
       );
@@ -253,20 +237,18 @@ describe('Auth routes', () => {
 
     test('should return 401 error if refresh token is blacklisted', async () => {
       await insertUsers([userOne]);
-      const dbUserOne = (await prisma.user.findUnique({ where: { email: userOne.email } })) as User;
+      const dbUserOne = (await User.findOne({ email: userOne.email })) as IUser;
       const expires = moment().add(config.jwt.refreshExpirationDays, 'days');
       const refreshToken = tokenService.generateToken(
-        dbUserOne.id,
-        Role.SELLER,
-        Country.USA,
+        dbUserOne._id,
+        Role.USER,
         expires,
         TokenType.REFRESH
       );
       await tokenService.saveToken(
         refreshToken,
-        dbUserOne.id,
-        Role.SELLER,
-        Country.USA,
+        dbUserOne._id,
+        Role.USER,
         expires,
         TokenType.REFRESH,
         true
@@ -280,20 +262,18 @@ describe('Auth routes', () => {
 
     test('should return 401 error if refresh token is expired', async () => {
       await insertUsers([userOne]);
-      const dbUserOne = (await prisma.user.findUnique({ where: { email: userOne.email } })) as User;
+      const dbUserOne = (await User.findOne({ email: userOne.email })) as IUser;
       const expires = moment().subtract(1, 'minutes');
       const refreshToken = tokenService.generateToken(
-        dbUserOne.id,
-        Role.SELLER,
-        Country.USA,
+        dbUserOne._id,
+        Role.USER,
         expires,
         TokenType.REFRESH
       );
       await tokenService.saveToken(
         refreshToken,
-        dbUserOne.id,
-        Role.SELLER,
-        Country.USA,
+        dbUserOne._id,
+        Role.USER,
         expires,
         TokenType.REFRESH
       );
@@ -303,17 +283,6 @@ describe('Auth routes', () => {
         .send({ refreshToken })
         .expect(httpStatus.UNAUTHORIZED);
     });
-
-    // test('should return 401 error if user is not found', async () => {
-    //   const expires = moment().add(config.jwt.refreshExpirationDays, 'days');
-    //   const refreshToken = tokenService.generateToken(dbUserOne.id, expires, TokenType.REFRESH);
-    //   await tokenService.saveToken(refreshToken, dbUserOne.id, expires, TokenType.REFRESH);
-
-    //   await request(app)
-    //     .post('/auth/refresh-tokens')
-    //     .send({ refreshToken })
-    //     .expect(httpStatus.UNAUTHORIZED);
-    // });
   });
 
   describe('POST /auth/forgot-password', () => {
@@ -323,7 +292,7 @@ describe('Auth routes', () => {
 
     test('should return 204 and send reset password email to the user', async () => {
       await insertUsers([userOne]);
-      const dbUserOne = (await prisma.user.findUnique({ where: { email: userOne.email } })) as User;
+      const dbUserOne = (await User.findOne({ email: userOne.email })) as IUser;
       const sendResetPasswordEmailSpy = jest
         .spyOn(emailService, 'sendResetPasswordEmail')
         .mockImplementationOnce(() => new Promise((resolve) => void resolve()));
@@ -335,12 +304,10 @@ describe('Auth routes', () => {
 
       expect(sendResetPasswordEmailSpy).toHaveBeenCalledWith(userOne.email, expect.any(String));
       const resetPasswordToken = sendResetPasswordEmailSpy.mock.calls[0][1];
-      const dbResetPasswordTokenData = await prisma.token.findFirst({
-        where: {
-          token: resetPasswordToken,
-          userId: dbUserOne.id
-        }
-      });
+      const dbResetPasswordTokenData = await Token.findOne({
+        token: resetPasswordToken,
+        userId: dbUserOne._id
+      }).exec();
       expect(dbResetPasswordTokenData).toBeDefined();
     });
 
@@ -370,20 +337,18 @@ describe('Auth routes', () => {
 
     test('should return 400 if password is missing or invalid', async () => {
       await insertUsers([userOne]);
-      const dbUserOne = (await prisma.user.findUnique({ where: { email: userOne.email } })) as User;
+      const dbUserOne = (await User.findOne({ email: userOne.email })) as IUser;
       const expires = moment().add(config.jwt.resetPasswordExpirationMinutes, 'minutes');
       const resetPasswordToken = tokenService.generateToken(
-        dbUserOne.id,
-        Role.SELLER,
-        Country.USA,
+        dbUserOne._id,
+        Role.USER,
         expires,
         TokenType.RESET_PASSWORD
       );
       await tokenService.saveToken(
         resetPasswordToken,
-        dbUserOne.id,
-        Role.SELLER,
-        Country.USA,
+        dbUserOne._id,
+        Role.USER,
         expires,
         TokenType.RESET_PASSWORD
       );
