@@ -37,19 +37,3 @@ Runs tests in console, in browser or with coverage.
 ### `lint`, `prettier`
 
 Runs linting and formatting for all files in `src` folder.
-
-### `cdk`
-
-Interact with the AWS Cloud Development Kit (CDK).
-
-### `cdk:bs`
-
-Bootstrap your AWS environment for CDK.
-
-### `cdk:deploy`
-
-Deploy this stack to your default AWS account/region
-
-### `cdk:destroy`
-
-Remove CDK stacks and associated resources.
