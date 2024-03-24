@@ -12,6 +12,11 @@ import { authLimiter } from './middlewares/rateLimiter';
 import routes from './routes';
 import { errorConverter, errorHandler } from './middlewares/error';
 import ApiError from './utils/ApiError';
+import Product, { IProduct } from './models/Product';
+import User from './models/User';
+import { encryptPassword } from './utils/encryption';
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 
@@ -61,5 +66,35 @@ app.use(errorConverter);
 
 // handle error
 app.use(errorHandler);
+
+async function main() {
+  const products = await Product.find({}).exec();
+  const users = await User.find({}).exec();
+
+  if (products.length === 0) {
+    const rawData = fs.readFileSync(path.join(__dirname, '../lib/products.json'), 'utf8');
+    const productsData = JSON.parse(rawData);
+    const convertedProductsData = productsData.map((product: any) => {
+      const { id, ...productWithoutId } = product;
+      productWithoutId.colors = [productWithoutId.color];
+      return productWithoutId;
+    });
+    await Product.create(convertedProductsData);
+    console.log('products created');
+  }
+  if (users.length === 0) {
+    const rawData = fs.readFileSync(path.join(__dirname, '../lib/users.json'), 'utf8');
+    const usersData = JSON.parse(rawData);
+    const convertedUsersData = await Promise.all(
+      usersData.map(async (user: any) => {
+        user.password = await encryptPassword(user.password);
+        return user;
+      })
+    );
+    await User.create(convertedUsersData);
+    console.log('users created');
+  }
+}
+main().catch((err) => console.log(err));
 
 export default app;

@@ -7,6 +7,32 @@ import { Role } from '../utils/constants';
 
 const router = express.Router();
 
+router.route('/admin').get(
+  auth(Role.ADMIN),
+  productController.getProductsAdmin
+  /*
+    #swagger.summary = 'Get products for admin management'
+    #swagger.tags = ['Products']
+    #swagger.security = [{Bearer: []}]
+    #swagger.responses[200] = {
+      schema: { $ref: "#/definitions/Product" },
+      description: 'Products fetched.'
+    }
+    #swagger.responses[401] = {
+        description: 'No permission for this action',
+        content: {
+            'application/json': {
+                schema: { $ref: '#/products/schemas/ApiError' },
+                example: {
+                    code: 401,
+                    message: 'Unauthorized'
+                }
+            }
+        }
+    }
+     */
+);
+
 router.route('/images/:productId').patch(
   auth(Role.ADMIN),
   validate(productValidation.updateProductImages),
@@ -115,7 +141,7 @@ router.route('/deactivate/:productId').patch(
 router
   .route('/')
   .post(
-    // auth(Role.ADMIN),
+    auth(Role.ADMIN),
     validate(productValidation.createProduct),
     productController.createProduct
     /*
@@ -171,10 +197,35 @@ router
     #swagger.summary = 'Get products'
     #swagger.tags = ['Products']
     #swagger.security = [{Bearer: []}]
-    #swagger.parameters['categoryId'] = {
+    #swagger.parameters['_page'] = {
       in: 'query',
       type: 'number',
-      description: 'Category id.'
+      description: 'Page number.'
+    }
+    #swagger.parameters['_limit'] = {
+      in: 'query',
+      type: 'number',
+      description: 'Number of products per page.'
+    }
+    #swagger.parameters['category'] = {
+      in: 'query',
+      type: 'string',
+      description: 'Category name.'
+    }
+    #swagger.parameters['brand'] = {
+      in: 'query',
+      type: 'string',
+      description: 'Brand name.'
+    }
+    #swagger.parameters['_sort'] = {
+      in: 'query',
+      type: 'string',
+      description: 'Sort by field.'
+    }
+    #swagger.parameters['_order'] = {
+      in: 'query',
+      type: 'string',
+      description: 'Sort order.'
     }
 
     #swagger.responses[200] = {

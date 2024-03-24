@@ -15,7 +15,8 @@ const updateUser = {
   body: Joi.object()
     .keys({
       name: Joi.string().required(),
-      email: Joi.string().required().email()
+      email: Joi.string().required().email(),
+      phone: Joi.string().pattern(CHECK_PHONE_SCHEMA)
     })
     .min(1)
 };

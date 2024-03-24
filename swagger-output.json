@@ -891,6 +891,51 @@
         ]
       }
     },
+    "/products/admin": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get products for admin management",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Products fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No permission for this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/products/schemas/ApiError"
+                },
+                "example": {
+                  "code": 401,
+                  "message": "Unauthorized"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
     "/products/images/{productId}": {
       "patch": {
         "tags": [
@@ -971,7 +1016,21 @@
           {
             "Bearer": []
           }
-        ]
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "images": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/products/deactivate/{productId}": {
@@ -1048,11 +1107,51 @@
         "description": "",
         "parameters": [
           {
-            "name": "categoryId",
+            "name": "_page",
             "in": "query",
-            "description": "Category id.",
+            "description": "Page number.",
             "schema": {
               "type": "number"
+            }
+          },
+          {
+            "name": "_limit",
+            "in": "query",
+            "description": "Number of products per page.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Category name.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "brand",
+            "in": "query",
+            "description": "Brand name.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "_sort",
+            "in": "query",
+            "description": "Sort by field.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "_order",
+            "in": "query",
+            "description": "Sort order.",
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -1464,6 +1563,9 @@
                     "example": "any"
                   },
                   "images": {
+                    "example": "any"
+                  },
+                  "colors": {
                     "example": "any"
                   },
                   "price": {

@@ -3,14 +3,14 @@
     "name": "Elian Cheng",
     "email": "admin@test.com",
     "password": "Test1234*",
-    "phone": "68245456502",
+    "phone": "68245456500",
     "role": "admin"
   },
   {
     "name": "Jane Doe",
     "email": "user@test.com",
     "password": "Test1234*",
-    "phone": "68245456502",
+    "phone": "68245456501",
     "role": "user"
   },
   {

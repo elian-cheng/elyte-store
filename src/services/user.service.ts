@@ -8,6 +8,7 @@ export const queryUsersSelect = {
   id: true,
   name: true,
   email: true,
+  phone: true,
   role: true,
   isBanned: true,
   createdAt: true,
@@ -56,7 +57,16 @@ const getUserById = async (id: string): Promise<IUser | null> => {
  */
 const getUserByEmail = async <Key extends keyof IUser>(
   email: string,
-  keys: Key[] = ['id', 'email', 'name', 'password', 'role', 'createdAt', 'updatedAt'] as Key[]
+  keys: Key[] = [
+    'id',
+    'email',
+    'name',
+    'phone',
+    'password',
+    'role',
+    'createdAt',
+    'updatedAt'
+  ] as Key[]
 ): Promise<Pick<IUser, Key> | null> => {
   // select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {})
   return await User.findOne({ email }).select(keys.join(' ')).exec();
@@ -109,7 +119,7 @@ const updateUserRoleById = async (userId: string, role: Role): Promise<IUser> =>
 
   const updatedUser = await User.findOneAndUpdate({ _id: userId }, updateData, {
     new: true,
-    select: ['id', 'name', 'email', 'role']
+    select: queryUsersSelect
   });
 
   return updatedUser as IUser;
@@ -138,7 +148,7 @@ const banOrRestoreUserById = async (userId: number, isBanned: boolean) => {
     },
     {
       new: true,
-      select: ['id', 'name', 'email', 'role']
+      select: queryUsersSelect
     }
   );
 

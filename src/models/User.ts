@@ -1,11 +1,13 @@
 import { Schema, model, Document } from 'mongoose';
+import { Role } from '../utils/constants';
 
 export interface IUser extends Document {
   _id: string;
   email: string;
   name?: string;
   password: string;
-  role: string;
+  role: Role;
+  phone?: number;
   address?: {
     street: string;
     city: string;
@@ -24,6 +26,10 @@ const UserSchema = new Schema<IUser>(
       required: true,
       unique: true
     },
+    phone: {
+      type: Number,
+      unique: true
+    },
     password: {
       type: String,
       required: true,
@@ -33,7 +39,7 @@ const UserSchema = new Schema<IUser>(
     name: {
       type: String
     },
-    role: { type: String, required: true, default: 'user' },
+    role: { type: String, enum: Object.values(Role), default: Role.USER },
     address: { type: [Schema.Types.Mixed] },
     isBanned: { type: Boolean, default: false }
   },

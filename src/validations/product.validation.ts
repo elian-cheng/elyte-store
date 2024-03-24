@@ -1,4 +1,4 @@
-import Joi, { object } from 'joi';
+import Joi from 'joi';
 import { CHECK_IMAGE_BUCKET } from '../utils/constants';
 import { objectId } from './custom.validation';
 
@@ -13,7 +13,7 @@ const createProduct = {
     description: Joi.string().required().max(1500),
     price: Joi.number().positive().precision(2).required(),
     discountPercentage: Joi.number().precision(2).min(0).max(99).default(0),
-    rating: Joi.number().positive().precision(2).required(),
+    rating: Joi.number().positive().precision(2).default(0),
     stock: Joi.number().integer().positive().required(),
     brand: Joi.string().required().max(20),
     colors: Joi.array().items(Joi.string().max(20))
@@ -51,7 +51,8 @@ const updateProduct = {
       rating: Joi.number().precision(2).required(),
       stock: Joi.number().integer().required(),
       brand: Joi.string().required().max(20),
-      colors: Joi.array().items(Joi.string().max(20))
+      colors: Joi.array().items(Joi.string().max(20)),
+      isActive: Joi.boolean().default(true)
     })
     .min(1)
 };
@@ -74,7 +75,7 @@ const updateProductImages = {
   }),
   body: Joi.object().keys({
     images: Joi.array()
-      .items(Joi.string().regex(CHECK_IMAGE_BUCKET).max(100).allow(''))
+      .items(Joi.string().regex(CHECK_IMAGE_BUCKET).max(150).allow(''))
       .min(1)
       .max(4)
   })

@@ -25,7 +25,7 @@ const createProduct = async (
   stock: number,
   price: number,
   discountPercentage: number,
-  images: string,
+  images: string[] = [],
   rating: number,
   colors: string[] = []
 ): Promise<IProduct> => {
@@ -103,15 +103,8 @@ const getProducts = async (
  * Get products for admin
  * @returns {Promise<IProduct[]>}
  */
-const getProductsAdmin = async (): Promise<{ data: IProduct[]; totalDocs: number }> => {
-  const query = Product.find();
-  const totalProductsQuery = Product.find();
-  const totalDocs = await totalProductsQuery.countDocuments().exec();
-  const docs = await query.exec();
-  return {
-    data: docs,
-    totalDocs
-  };
+const getProductsAdmin = async (): Promise<IProduct[]> => {
+  return await Product.find().exec();
 };
 
 /**
@@ -122,7 +115,20 @@ const getProductsAdmin = async (): Promise<{ data: IProduct[]; totalDocs: number
  */
 const getProductById = async <Key extends keyof IProduct>(
   id: number,
-  keys: Key[] = ['_id', 'title', 'description', 'category', 'brand', 'isActive'] as Key[]
+  keys: Key[] = [
+    '_id',
+    'title',
+    'description',
+    'price',
+    'discountPercentage',
+    'category',
+    'brand',
+    'images',
+    'colors',
+    'rating',
+    'stock',
+    'isActive'
+  ] as Key[]
 ): Promise<Pick<IProduct, Key> | null> => {
   return Product.findById(id).select(keys.join(' ')).sort({ _id: 'asc' }).exec();
 };
@@ -135,6 +141,7 @@ const getProductById = async <Key extends keyof IProduct>(
  * @param {string} category
  * @param {string} brand
  * @param {string[]} images
+ * @param {string[]} colors
  * @param {boolean} isActive
  * @returns {Promise<Product>}
  */
@@ -145,6 +152,7 @@ const updateProductById = async (
   category: string,
   brand: string,
   images: string[],
+  colors: string[],
   price: number,
   discountPercentage: number,
   rating: number,
@@ -159,6 +167,7 @@ const updateProductById = async (
       category,
       brand,
       images,
+      colors,
       price,
       discountPercentage,
       rating,
@@ -205,12 +214,21 @@ const deactivateOrRestoreProductById = async (productId: number, isActive: boole
 };
 
 /**
- * Update product image by id
+ * Update product images by id
  * @param {number} productId
- * @param {string} image
+ * @param {string[]} images
  * @returns {Promise<IProduct>}
  */
-const updateProductImages = async (productId: number, image: string) => {};
+const updateProductImages = async (productId: number, images: string[]) => {
+  const product = await Product.findByIdAndUpdate(
+    productId,
+    {
+      images
+    },
+    { new: true }
+  );
+  return product as IProduct;
+};
 
 export default {
   createProduct,
