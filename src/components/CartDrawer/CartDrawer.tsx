@@ -32,7 +32,7 @@ const CartDrawer: React.FC = () => {
     dispatch(removeItemFromCart(id));
   };
   const addItemHandler = (product: ICartItem) => {
-    dispatch(addItemToCart({ ...product }));
+    dispatch(addItemToCart({ ...product, quantity: 1 }));
   };
 
   return (

@@ -94,16 +94,15 @@ const Header = () => {
                   />
                 </>
               )}
-              {!user ||
-                (user && !isAdmin && (
-                  <>
-                    {USER_NAV.map((link) => (
-                      <StyledMenuItem disableGutters key={link.url}>
-                        <StyledLink to={link.url}>{link.name}</StyledLink>
-                      </StyledMenuItem>
-                    ))}
-                  </>
-                ))}
+              {!isAdmin && (
+                <>
+                  {USER_NAV.map((link) => (
+                    <StyledMenuItem disableGutters key={link.url}>
+                      <StyledLink to={link.url}>{link.name}</StyledLink>
+                    </StyledMenuItem>
+                  ))}
+                </>
+              )}
             </Navbar>
             <Stack
               sx={{
@@ -114,23 +113,22 @@ const Header = () => {
               spacing={2}
               direction={'row'}
             >
-              {!user ||
-                (user && !isAdmin && (
-                  <IconButton
-                    onClick={() => setOpenCartDrawer((open) => !open)}
-                    sx={{ color: Colors.WHITE, padding: 0 }}
-                    size="large"
-                  >
-                    <Badge badgeContent={totalQuantity} color="secondary">
-                      <ShoppingCart
-                        sx={{
-                          verticalAlign: 'middle',
-                          mr: '.5rem',
-                        }}
-                      />
-                    </Badge>
-                  </IconButton>
-                ))}
+              {!isAdmin && (
+                <IconButton
+                  onClick={() => setOpenCartDrawer((open) => !open)}
+                  sx={{ color: Colors.WHITE, padding: 0 }}
+                  size="large"
+                >
+                  <Badge badgeContent={totalQuantity} color="secondary">
+                    <ShoppingCart
+                      sx={{
+                        verticalAlign: 'middle',
+                        mr: '.5rem',
+                      }}
+                    />
+                  </Badge>
+                </IconButton>
+              )}
               {user ? (
                 <AvatarMenu />
               ) : (

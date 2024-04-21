@@ -36,7 +36,7 @@ const FlyingProductImage = styled('img')(({ theme }) => ({
 }));
 
 const ProductCard: React.FC<IProductProps> = ({ product }) => {
-  const { title, price, _id, images } = product;
+  const { title, price, _id, images, discountPrice } = product;
   const flyingImageRef = useRef<HTMLImageElement>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -48,8 +48,7 @@ const ProductCard: React.FC<IProductProps> = ({ product }) => {
       addItemToCart({
         id: _id,
         title,
-        price,
-        totalPrice: price,
+        price: discountPrice || price,
         quantity: 1,
         image: images[0],
       })
@@ -111,9 +110,30 @@ const ProductCard: React.FC<IProductProps> = ({ product }) => {
           <Typography component="h2" variant="h6" sx={{ my: '.5rem' }}>
             {title}
           </Typography>
-          <Typography gutterBottom variant="h5" component="div" sx={{ p: 1 }}>
-            {'$' + price.toFixed(2)}
-          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              mb: 1.5,
+              justifyContent: 'center',
+              alignSelf: 'center',
+            }}
+          >
+            <Typography variant="h6" sx={{ fontWeight: 400 }}>
+              ${product.discountPrice.toFixed(2)}
+            </Typography>
+            {product.discountPercentage > 0 && (
+              <>
+                <Typography
+                  variant="body1"
+                  sx={{ textDecoration: 'line-through', py: '0.3rem' }}
+                >
+                  ${product.price.toFixed(2)}
+                </Typography>
+              </>
+            )}
+          </Box>
           <Button
             variant="contained"
             size="large"

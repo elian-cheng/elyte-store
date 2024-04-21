@@ -9,8 +9,8 @@ export interface IProduct {
   brand: string;
   category: string;
   images: string[];
-  colors?: string[];
-  discountPrice?: number;
+  colors: string[];
+  discountPrice: number;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;

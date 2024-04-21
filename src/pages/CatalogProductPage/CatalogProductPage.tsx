@@ -13,6 +13,7 @@ import Loader from 'components/Loader/Loader';
 import useGetProduct from 'hooks/useGetProduct';
 import { IProduct } from 'interfaces/ProductInterface';
 import { useParams } from 'react-router-dom';
+import ProductDetails from './ProductDetails/ProductDetails';
 
 const CatalogProductPage = () => {
   const { id } = useParams();
@@ -39,16 +40,16 @@ const CatalogProductPage = () => {
             {/* <Link
               underline="hover"
               color="inherit"
-              href="/material-ui/getting-started/installation/"
+              href={`/catalog?category=${product.category}`}
             >
-              Core
+              {product.category}
             </Link> */}
             <Typography color="text.primary">{product.title}</Typography>
           </Breadcrumbs>
           <Box
             sx={{
               display: 'flex',
-              alignItems: 'center',
+              alignItems: 'flex-start',
               justifyContent: 'space-between',
               width: '90%',
               margin: '50px auto',
@@ -58,6 +59,7 @@ const CatalogProductPage = () => {
               },
               [theme.breakpoints.down('md')]: {
                 flexDirection: 'column',
+                alignItems: 'center',
                 gap: '30px',
                 marginBottom: '30px',
               },
@@ -68,7 +70,7 @@ const CatalogProductPage = () => {
             ) : (
               <MobileGallery images={product.images} />
             )}
-            {/* <ProductDetails product={product} /> */}
+            <ProductDetails product={product} />
           </Box>
         </>
       )}
