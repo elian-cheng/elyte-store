@@ -4,6 +4,7 @@ import axios, { AxiosError } from 'axios';
 import { IProduct } from 'interfaces/ProductInterface';
 import { BASE_URL } from 'main';
 import toast from 'react-hot-toast';
+import { BRANDS, CATEGORIES } from 'utils/constants';
 
 interface ICatalogState {
   products: IProduct[];
@@ -68,18 +69,18 @@ export const catalogSlice = createSlice({
     builder
       .addCase(getCatalogProducts.fulfilled, (state, action) => {
         state.products = action.payload.products;
-        const brandList = [
-          ...new Set(
-            action.payload.products.map((item: IProduct) => item.brand)
-          ),
-        ].sort() as string[];
-        const categoryList = [
-          ...new Set(
-            action.payload.products.map((item: IProduct) => item.category)
-          ),
-        ].sort() as string[];
-        state.brands = brandList;
-        state.categories = categoryList;
+        // const brandList = [
+        //   ...new Set(
+        //     action.payload.products.map((item: IProduct) => item.brand)
+        //   ),
+        // ].sort() as string[];
+        // const categoryList = [
+        //   ...new Set(
+        //     action.payload.products.map((item: IProduct) => item.category)
+        //   ),
+        // ].sort() as string[];
+        state.brands = BRANDS;
+        state.categories = CATEGORIES;
         state.totalItems = action.payload.totalItems;
         state.isLoading = false;
       })

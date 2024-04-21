@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -18,11 +18,7 @@ import {
 import { IProduct } from 'interfaces/ProductInterface';
 import Colors from 'theme/colors';
 import { useAppDispatch } from 'hooks/redux';
-import {
-  ICartItem,
-  addItemToCart,
-  removeItemFromCart,
-} from 'store/redux/cartSlice';
+import { addItemToCart } from 'store/redux/cartSlice';
 import { Add, Remove } from '@mui/icons-material';
 import toast from 'react-hot-toast';
 
@@ -136,7 +132,11 @@ const ProductDetails: React.FC<{ product: IProduct }> = ({ product }) => {
           <Chip
             key={color}
             label={color}
-            sx={{ backgroundColor: color, color: Colors.WHITE }}
+            sx={{
+              backgroundColor: color,
+              color: color === 'white' ? 'black' : 'white',
+              border: `1px solid ${color === 'white' ? 'black' : 'white'}`,
+            }}
           />
         ))}
       </Box>

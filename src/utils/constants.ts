@@ -22,6 +22,36 @@ export const CATEGORIES = [
   'TV-box',
 ];
 
+export const BRANDS = [
+  'Acer',
+  'Alienware',
+  'Amazon',
+  'Apple',
+  'Aspor',
+  'Asus',
+  'BenQ',
+  'Dell',
+  'Digma',
+  'HP',
+  'Harper',
+  'Huawei',
+  'Iiyama',
+  'LG',
+  'Lenovo',
+  'MSI',
+  'Mecool',
+  'Onyx',
+  'Oppo',
+  'Philips',
+  'PocketBook',
+  'Prestigio',
+  'Realme',
+  'Ritmix',
+  'Samsung',
+  'Ugoos',
+  'Xiaomi',
+];
+
 export const ITEMS_PER_PAGE = 12;
 export const COLORS = [
   'red',

@@ -7,8 +7,8 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import Gallery from 'components/ImageGallery/Gallery';
-import MobileGallery from 'components/ImageGallery/MobileGallery';
+import Gallery from 'pages/CatalogProductPage/ImageGallery/Gallery';
+import MobileGallery from 'pages/CatalogProductPage/ImageGallery/MobileGallery';
 import Loader from 'components/Loader/Loader';
 import useGetProduct from 'hooks/useGetProduct';
 import { IProduct } from 'interfaces/ProductInterface';
