@@ -6,7 +6,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useAppSelector } from 'hooks/redux';
-import { FC, Fragment } from 'react';
+import { FC } from 'react';
 import Colors from 'theme/colors';
 import { IFilter } from '../CatalogPage';
 

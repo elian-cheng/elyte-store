@@ -5,7 +5,13 @@ import Colors from 'theme/colors';
 const Loader = () => {
   return (
     <Box
-      sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        margin: '0 auto',
+      }}
     >
       <Blocks
         height="80"

@@ -123,51 +123,43 @@ const CatalogPage = () => {
 
   return (
     <Container>
-      {isError ? (
-        <Typography variant="body1">
-          Something went wrong... Check your internet connection.
-        </Typography>
-      ) : isLoading ? (
-        <Loader />
-      ) : (
-        <>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            sx={{ gap: '1.5rem' }}
-          >
-            {!isDesktop && (
-              <Box display="flex" alignItems="center">
-                <Button
-                  variant="outlined"
-                  // onClick={onFilterClick}
-                  startIcon={<FilterList />}
-                >
-                  Filter
-                </Button>
-              </Box>
-            )}
-            <Box display="flex" alignItems="center" sx={{ flex: 1 }}>
-              <TextField
-                label="Search..."
-                value={searchQuery}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  handleSearchChange(e.target.value)
-                }
-                fullWidth
-                size="small"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Search />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Box>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ gap: '1.5rem' }}
+      >
+        {!isDesktop && (
+          <Box display="flex" alignItems="center">
+            <Button
+              variant="outlined"
+              // onClick={onFilterClick}
+              startIcon={<FilterList />}
+            >
+              Filter
+            </Button>
+          </Box>
+        )}
+        <Box display="flex" alignItems="center" sx={{ flex: 1 }}>
+          <TextField
+            label="Search..."
+            value={searchQuery}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleSearchChange(e.target.value)
+            }
+            fullWidth
+            size="small"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Search />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
 
-            {/* <Box display="flex" alignItems="center" gap={1}>
+        {/* <Box display="flex" alignItems="center" gap={1}>
               <IconButton
                 color={viewMode === 'grid' ? 'primary' : 'default'}
                 onClick={() => handleViewModeChange('grid')}
@@ -182,62 +174,69 @@ const CatalogPage = () => {
               </IconButton>
             </Box> */}
 
-            <Box display="flex" alignItems="center" gap={1} minWidth={200}>
-              {/* <Typography variant="body1">
+        <Box display="flex" alignItems="center" gap={1} minWidth={200}>
+          {/* <Typography variant="body1">
                 Found: <span>{totalItems}</span>
               </Typography> */}
-              <FormControl variant="outlined" size="small" fullWidth>
-                <InputLabel htmlFor="sort-select">Sort by</InputLabel>
-                <Select
-                  id="sort-select"
-                  onChange={(e: SelectChangeEvent) =>
-                    handleSort(e.target.value)
-                  }
-                  defaultValue=""
-                  label="Sort by"
-                >
-                  {sortOptions.map((option) => (
-                    <MenuItem key={option.name} value={option.value}>
-                      {option.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
+          <FormControl variant="outlined" size="small" fullWidth>
+            <InputLabel htmlFor="sort-select">Sort by</InputLabel>
+            <Select
+              id="sort-select"
+              onChange={(e: SelectChangeEvent) => handleSort(e.target.value)}
+              defaultValue=""
+              label="Sort by"
+            >
+              {sortOptions.map((option) => (
+                <MenuItem key={option.name} value={option.value}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+      </Box>
+      <Divider sx={{ my: '1.5rem' }} />
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'flex-start',
+          columnGap: '1rem',
+          rowGap: '1rem',
+          my: '2rem',
+        }}
+      >
+        {isDesktop && (
+          <Box sx={{ flex: '0 1 30%' }}>
+            <Filters onFilterChange={handleFilterChange} filter={filter} />
           </Box>
-          <Divider sx={{ my: '1.5rem' }} />
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              justifyContent: 'center',
-              columnGap: '1rem',
-              rowGap: '1rem',
-              my: '2rem',
-            }}
-          >
-            {isDesktop && (
-              <Box sx={{ flex: '1 1 30%' }}>
-                <Filters onFilterChange={handleFilterChange} filter={filter} />
-              </Box>
-            )}
+        )}
+        {isError ? (
+          <Typography variant="body1">
+            Something went wrong... Check your internet connection.
+          </Typography>
+        ) : isLoading ? (
+          <Loader />
+        ) : (
+          <>
             <Grid
               container
               spacing={{ xxs: 2 }}
               sx={{
                 justifyContent: 'center',
                 flex: '0 1 75%',
+                justifySelf: 'center',
               }}
             >
               {products.map((product) => (
                 <ProductCard product={product} key={product._id} />
               ))}
             </Grid>
-          </Box>
-          {products.length && (
-            <Pagination page={page} setPage={setPage} totalItems={totalItems} />
-          )}
-        </>
+          </>
+        )}
+      </Box>
+      {products.length && (
+        <Pagination page={page} setPage={setPage} totalItems={totalItems} />
       )}
     </Container>
   );
