@@ -3,7 +3,6 @@ import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/catchAsync';
 import logger from '../config/logger';
 import { productService } from '../services';
-import { IUser } from '../models/User';
 
 const createProduct = catchAsync(async (req, res) => {
   const {
@@ -35,14 +34,15 @@ const createProduct = catchAsync(async (req, res) => {
 });
 
 const getProducts = catchAsync(async (req, res) => {
-  const { _page, _limit, category, brand, _sort, _order } = req.query;
+  const { _page, _limit, category, brand, _sort, _order, search } = req.query;
   const products = await productService.getProducts(
     _page ? +_page : undefined,
     _limit ? +_limit : undefined,
     category as string,
     brand as string,
     _sort as string,
-    _order as string
+    _order as string,
+    search as string
   );
   res.status(httpStatus.OK).send(products);
 });

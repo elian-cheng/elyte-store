@@ -51,23 +51,32 @@ const createProduct = async (
  */
 const getProducts = async (
   _page: number = 1,
-  _limit: number = 10,
+  _limit: number = 12,
   category?: string,
   brand?: string,
   _sort?: string,
-  _order?: string
+  _order?: string,
+  search?: string
 ): Promise<{ data: IProduct[]; totalDocs: number }> => {
   // filter = {"category":["smartphone","laptops"]}
   // sort = {_sort:"price",_order="desc"}
   // pagination = {_page:1,_limit=10}
-  let condition = { isActive: { $ne: false } };
+
+  // eslint-disable-next-line no-explicit-any
+  let condition: any = { isActive: { $ne: false } };
+
+  if (search) {
+    condition = {
+      ...condition,
+      $or: [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ]
+    };
+  }
 
   let query = Product.find(condition);
   let totalProductsQuery = Product.find(condition);
-  // let query = Product.find();
-  // let totalProductsQuery = Product.find();
-
-  console.log(category);
 
   if (category) {
     query = query.find({ category: { $in: category.split(',') } });
@@ -120,6 +129,7 @@ const getProductById = async <Key extends keyof IProduct>(
     'title',
     'description',
     'price',
+    'discountPrice',
     'discountPercentage',
     'category',
     'brand',

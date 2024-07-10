@@ -4,7 +4,7 @@ import { objectId } from './custom.validation';
 
 const createProduct = {
   body: Joi.object().keys({
-    title: Joi.string().required().max(20),
+    title: Joi.string().required().max(30),
     category: Joi.string().required().max(30),
     images: Joi.array()
       .items(Joi.string().regex(CHECK_IMAGE_BUCKET).max(150).allow(''))
@@ -39,7 +39,7 @@ const updateProduct = {
   }),
   body: Joi.object()
     .keys({
-      title: Joi.string().required().max(20),
+      title: Joi.string().required().max(30),
       category: Joi.string().required().max(30),
       images: Joi.array()
         .items(Joi.string().regex(CHECK_IMAGE_BUCKET).max(150).allow(''))
