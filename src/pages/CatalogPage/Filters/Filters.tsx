@@ -20,8 +20,7 @@ interface IFiltersProps {
 }
 
 const Filters: FC<IFiltersProps> = ({ onFilterChange, filter }) => {
-  const { isLoading, isError, products, brands, categories, totalItems } =
-    useAppSelector((state) => state.catalog);
+  const { brands, categories } = useAppSelector((state) => state.catalog);
 
   const filtersArr = [
     {

@@ -14,6 +14,7 @@ import {
   useTheme,
   InputAdornment,
   Divider,
+  Drawer,
 } from '@mui/material';
 import Loader from 'components/Loader/Loader';
 import { useAppDispatch, useAppSelector } from 'hooks/redux';
@@ -63,6 +64,7 @@ const CatalogPage = () => {
   const [filter, setFilter] = useState<IFilter>({});
   const [sort, setSort] = useState<ISort>({});
   const [searchQuery, setSearchQuery] = useState('');
+  const [drawerOpen, setDrawerOpen] = useState(false);
   // const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const dispatch = useAppDispatch();
   const { isLoading, isError, products, totalItems } = useAppSelector(
@@ -74,6 +76,14 @@ const CatalogPage = () => {
   // const handleViewModeChange = (mode: 'grid' | 'list') => {
   //   setViewMode(mode);
   // };
+
+  const handleFilterClick = () => {
+    setDrawerOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+  };
 
   const handleFilterChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -105,9 +115,17 @@ const CatalogPage = () => {
     setSearchQuery(value);
   };
 
+  const handleSearchSubmit = () => {
+    const pagination = { _page: page, _limit: ITEMS_PER_PAGE };
+    console.log({ searchQuery });
+    dispatch(
+      getCatalogProducts({ filter, sort, pagination, search: searchQuery })
+    );
+  };
+
   const renderCatalog = useCallback(() => {
     const pagination = { _page: page, _limit: ITEMS_PER_PAGE };
-    dispatch(getCatalogProducts({ filter, sort, pagination }));
+    dispatch(getCatalogProducts({ filter, sort, pagination, search: '' }));
   }, [dispatch, filter, page, sort]);
 
   useEffect(() => {
@@ -127,13 +145,13 @@ const CatalogPage = () => {
         display="flex"
         justifyContent="space-between"
         alignItems="center"
-        sx={{ gap: '1.5rem' }}
+        sx={{ gap: '1.5rem', flexWrap: 'wrap' }}
       >
         {!isDesktop && (
           <Box display="flex" alignItems="center">
             <Button
               variant="outlined"
-              // onClick={onFilterClick}
+              onClick={handleFilterClick}
               startIcon={<FilterList />}
             >
               Filter
@@ -151,12 +169,23 @@ const CatalogPage = () => {
             size="small"
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end">
+                <InputAdornment
+                  position="end"
+                  sx={{ display: isDesktop ? 'flex' : 'none' }}
+                >
                   <Search />
                 </InputAdornment>
               ),
             }}
+            sx={{ minWidth: isDesktop ? '5rem' : '10rem' }}
           />
+          <Button
+            variant="contained"
+            sx={{ ml: 1, py: 1 }}
+            onClick={handleSearchSubmit}
+          >
+            Search
+          </Button>
         </Box>
 
         {/* <Box display="flex" alignItems="center" gap={1}>
@@ -200,7 +229,7 @@ const CatalogPage = () => {
         sx={{
           display: 'flex',
           alignItems: 'flex-start',
-          justifyContent: 'flex-start',
+          justifyContent: isDesktop ? 'flex-start' : 'center',
           columnGap: '1rem',
           rowGap: '1rem',
           my: '2rem',
@@ -235,9 +264,14 @@ const CatalogPage = () => {
           </>
         )}
       </Box>
-      {products.length && (
+      {products.length > 0 && !isLoading && !isError && (
         <Pagination page={page} setPage={setPage} totalItems={totalItems} />
       )}
+      <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerClose}>
+        <Box sx={{ width: 250, p: 2 }}>
+          <Filters onFilterChange={handleFilterChange} filter={filter} />
+        </Box>
+      </Drawer>
     </Container>
   );
 };

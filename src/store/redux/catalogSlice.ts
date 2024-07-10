@@ -30,13 +30,15 @@ export const getCatalogProducts = createAsyncThunk(
     filter,
     sort,
     pagination,
+    search,
   }: {
     filter: Record<string, string[]>;
     sort: Record<string, string>;
     pagination: Record<string, number>;
+    search: string;
   }) => {
     try {
-      const response = await getProducts(filter, sort, pagination);
+      const response = await getProducts(filter, sort, pagination, search);
       return response.data;
     } catch (err) {
       const error = err as AxiosError;

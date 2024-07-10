@@ -9,7 +9,8 @@ import {
 export const getProducts = async (
   filter: Record<string, string[]>,
   sort: Record<string, string>,
-  pagination: Record<string, number>
+  pagination: Record<string, number>,
+  search: string
 ) => {
   // filter = {"category":["smartphone","laptops"]}
   // sort = {_sort:"price",_order="desc"}
@@ -27,6 +28,9 @@ export const getProducts = async (
   }
   for (const key in pagination) {
     queryString += `${key}=${pagination[key]}&`;
+  }
+  if (search) {
+    queryString += `search=${search}`;
   }
 
   const response = await axios.get(`/products?${queryString}`);

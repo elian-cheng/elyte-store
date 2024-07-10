@@ -16,7 +16,7 @@ interface ICartState {
   totalAmount: number;
 }
 
-const saveCarttoLS = (
+const saveCartToLS = (
   cartItems: ICartItem[],
   totalAmount: number,
   totalQuantity: number
@@ -68,7 +68,7 @@ const cartSlice = createSlice({
           0
         )
         .toFixed(2);
-      saveCarttoLS(
+      saveCartToLS(
         state.cartItems.map((item) => item),
         state.totalAmount,
         state.totalQuantity
@@ -90,7 +90,7 @@ const cartSlice = createSlice({
           0
         )
         .toFixed(2);
-      saveCarttoLS(
+      saveCartToLS(
         state.cartItems.map((item) => item),
         state.totalAmount,
         state.totalQuantity
