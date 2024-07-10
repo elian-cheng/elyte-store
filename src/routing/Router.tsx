@@ -16,6 +16,7 @@ import LoginPage from 'pages/LoginPage/LoginPage';
 import CatalogPage from 'pages/CatalogPage/CatalogPage';
 import CatalogProductPage from 'pages/CatalogProductPage/CatalogProductPage';
 import DashboardPage from 'pages/DashboardPage/DashboardPage';
+import CartPage from 'pages/CartPage/CartPage';
 
 const Router = () => {
   const { user } = useAuth();
@@ -26,6 +27,7 @@ const Router = () => {
         <Route index element={<MainPage />} />
         <Route path="catalog" element={<CatalogPage />} />
         <Route path="catalog/:id" element={<CatalogProductPage />} />
+        <Route path="cart" element={<CartPage />} />
         <Route
           path="login"
           element={!user ? <LoginPage /> : <Navigate to="/" replace />}
