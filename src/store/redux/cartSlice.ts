@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import storage from '../../utils/storage';
+import { IUserData } from 'interfaces/UserInterface';
 
 export interface ICartItem {
   id: string;
@@ -14,6 +15,7 @@ interface ICartState {
   totalQuantity: number;
   changed?: boolean;
   totalAmount: number;
+  userData?: IUserData;
 }
 
 const saveCartToLS = (
@@ -96,9 +98,16 @@ const cartSlice = createSlice({
         state.totalQuantity
       );
     },
+    setShippingInfo(state, action: PayloadAction<IUserData>) {
+      state.userData = action.payload;
+    },
   },
 });
 
-export const { replaceCart, addItemToCart, removeItemFromCart } =
-  cartSlice.actions;
+export const {
+  replaceCart,
+  addItemToCart,
+  removeItemFromCart,
+  setShippingInfo,
+} = cartSlice.actions;
 export default cartSlice.reducer;

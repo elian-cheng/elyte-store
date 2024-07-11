@@ -1,6 +1,7 @@
 import { jwtDecode } from 'jwt-decode';
 import { Role } from './constants';
 import { refreshTokens } from 'api/auth';
+import { Country, State } from 'country-state-city';
 
 interface IPayload {
   exp: number;
@@ -77,4 +78,21 @@ export const stopTokenRefresh = () => {
   if (refreshInterval) {
     clearInterval(refreshInterval);
   }
+};
+
+// Function to convert ISO code to state name
+export const isoCodeToCountryStateName = (
+  countryIsoCode: string = '',
+  stateIsoCode: string = ''
+) => {
+  const country = Country.getCountryByCode(countryIsoCode)?.name || '';
+  const states = State.getStatesOfCountry(countryIsoCode);
+  let state = '';
+  if (stateIsoCode) {
+    state = states.find((s) => s.isoCode === stateIsoCode)?.name || '';
+  }
+  return {
+    country,
+    state,
+  };
 };

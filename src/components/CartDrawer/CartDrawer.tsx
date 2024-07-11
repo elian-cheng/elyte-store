@@ -167,7 +167,7 @@ const CartDrawer: React.FC = () => {
           variant="contained"
           color="primary"
           fullWidth
-          onClick={() => navigate('/cart')}
+          onClick={() => navigate('/checkout')}
         >
           Checkout
         </Button>

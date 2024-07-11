@@ -8,6 +8,11 @@ export const login = async (data: object) => {
   return response.data;
 };
 
+export const signUp = async (data: object) => {
+  const response = await axios.post<IUserLogin>('/auth/register', data);
+  return response.data;
+};
+
 export const logout = async (token: string) => {
   return await axios.post('/auth/logout', {
     refreshToken: token,

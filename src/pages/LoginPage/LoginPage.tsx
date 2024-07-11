@@ -1,5 +1,5 @@
 import { Container, Typography } from '@mui/material';
-import LoginForm from './LoginForm/LoginForm';
+import AuthForm from './AuthForm/AuthForm';
 
 const LoginPage = () => {
   return (
@@ -7,7 +7,7 @@ const LoginPage = () => {
       <Typography variant="h3" sx={{ mt: '2rem' }}>
         Elyte Store
       </Typography>
-      <LoginForm />
+      <AuthForm />
     </Container>
   );
 };

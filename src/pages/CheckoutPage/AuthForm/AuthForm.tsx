@@ -17,9 +17,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { LockOutlined } from '@mui/icons-material';
 import { AxiosError } from 'axios';
 import Colors from 'theme/colors';
-import { login } from 'api/auth';
+import { login, signUp } from 'api/auth';
 import { getUserId, getUserRole } from 'utils/helpers';
-import { useLocation, useNavigate } from 'react-router-dom';
 import ButtonLoader from 'components/ButtonLoader/ButtonLoader';
 import { loginUserSchema } from 'utils/validation/users';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -31,16 +30,26 @@ export interface IFormData {
   password: string;
 }
 
-const LoginForm: React.FC = () => {
+interface IAuthFormProps {
+  onNext: () => void;
+}
+
+const AuthForm: React.FC<IAuthFormProps> = ({ onNext }) => {
   const queryClient = useQueryClient();
+  const [isLogin, setIsLogin] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { setUser, setUserId } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
 
   const loginMutation = useMutation({
     mutationFn: login,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user'] });
+    },
+  });
+
+  const signUpMutation = useMutation({
+    mutationFn: signUp,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user'] });
     },
@@ -67,18 +76,31 @@ const LoginForm: React.FC = () => {
   const onSubmit: SubmitHandler<IFormData> = async (data) => {
     setIsLoading(true);
     try {
-      const res = await loginMutation.mutateAsync(data);
-      localStorage.setItem('access', res?.tokens?.access?.token || '');
-      localStorage.setItem('refresh', res?.tokens?.refresh?.token || '');
+      const res = isLogin
+        ? await loginMutation.mutateAsync(data)
+        : await signUpMutation.mutateAsync(data);
+
+      if (isLogin) {
+        localStorage.setItem('access', res?.tokens?.access?.token || '');
+        localStorage.setItem('refresh', res?.tokens?.refresh?.token || '');
+      }
+
       setUser(getUserRole());
       setUserId(getUserId());
-      location.pathname === '/login' ? navigate('/') : navigate('/app');
+      onNext();
     } catch (err: unknown) {
       const error = err as AxiosError<{ message: string }>;
-      toast.error(error?.response?.data?.message || 'Login attempt failed.');
+      toast.error(
+        error?.response?.data?.message ||
+          `${isLogin ? 'Login' : 'Sign Up'} attempt failed.`
+      );
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const switchAuthModeHandler = () => {
+    setIsLogin((prevState) => !prevState);
   };
 
   return (
@@ -103,7 +125,7 @@ const LoginForm: React.FC = () => {
         <LockOutlined />
       </Avatar>
       <Typography component="h2" variant="h4" sx={{ my: '.5rem' }}>
-        Login
+        {isLogin ? 'Login' : 'Sign Up'}
       </Typography>
       <form noValidate onSubmit={handleSubmit(onSubmit)}>
         <TextField
@@ -127,7 +149,7 @@ const LoginForm: React.FC = () => {
           required
           fullWidth
           name="password"
-          label={'Password'}
+          label="Password"
           id="password"
           type={showPassword ? 'text' : 'password'}
           autoComplete="current-password"
@@ -158,16 +180,26 @@ const LoginForm: React.FC = () => {
               color: 'white',
             }}
           >
-            {'Sign In'}
+            {isLogin ? 'Sign In' : 'Sign Up'}
           </Button>
         )}
 
         {isLoading && <ButtonLoader />}
 
-        <Grid container sx={{ mt: '1rem' }}>
+        <Grid
+          container
+          sx={{ mt: '1rem', justifyContent: 'space-between', rowGap: 2 }}
+        >
           <Grid item>
             <Link href="/forgot-password" variant="body2">
               Forgot password? Click here.
+            </Link>
+          </Grid>
+          <Grid item>
+            <Link href="#" variant="body2" onClick={switchAuthModeHandler}>
+              {isLogin
+                ? "Don't have an account? Sign Up"
+                : 'Already have an account? Sign In'}
             </Link>
           </Grid>
         </Grid>
@@ -176,4 +208,4 @@ const LoginForm: React.FC = () => {
   );
 };
 
-export default LoginForm;
+export default AuthForm;

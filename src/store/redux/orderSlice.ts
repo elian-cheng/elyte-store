@@ -2,16 +2,12 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios, { AxiosError } from 'axios';
 import { ICartItem } from './cartSlice';
 import { BASE_URL } from 'main';
+import { IUserData } from 'interfaces/UserInterface';
 
 export interface IOrder {
   _id?: string;
-  shop: string;
   userId: string;
-  userData: {
-    name: string;
-    phone: string;
-    address: string;
-  };
+  userData: IUserData;
   products: ICartItem[];
   totalAmount: number;
   date: string;
