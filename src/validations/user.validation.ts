@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { objectId } from './custom.validation';
+import { objectId, password } from './custom.validation';
 import { CHECK_PHONE_SCHEMA, Role } from '../utils/constants';
 
 const getUser = {
@@ -14,9 +14,17 @@ const updateUser = {
   }),
   body: Joi.object()
     .keys({
-      name: Joi.string().required(),
-      email: Joi.string().required().email(),
-      phone: Joi.string().pattern(CHECK_PHONE_SCHEMA)
+      name: Joi.string(),
+      email: Joi.string().email(),
+      phone: Joi.string().pattern(CHECK_PHONE_SCHEMA),
+      password: Joi.string().custom(password),
+      shippingInfo: Joi.object().keys({
+        address: Joi.string(),
+        city: Joi.string(),
+        country: Joi.string(),
+        state: Joi.string(),
+        zip: Joi.string()
+      })
     })
     .min(1)
 };

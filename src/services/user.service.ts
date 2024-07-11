@@ -43,10 +43,23 @@ const queryUsers = async () => {
 /**
  * Get user by id
  * @param {string} id
+ * @param {Array<Key>} keys
  * @returns {Promise<IUser>}
  */
-const getUserById = async (id: string): Promise<IUser | null> => {
-  return await User.findOne({ _id: id });
+const getUserById = async <Key extends keyof IUser>(
+  id: string,
+  keys: Key[] = [
+    '_id',
+    'email',
+    'name',
+    'phone',
+    'role',
+    'shippingInfo',
+    'createdAt',
+    'updatedAt'
+  ] as Key[]
+): Promise<IUser | null> => {
+  return await User.findOne({ _id: id }).select(keys.join(' ')).exec();
 };
 
 /**
@@ -58,12 +71,12 @@ const getUserById = async (id: string): Promise<IUser | null> => {
 const getUserByEmail = async <Key extends keyof IUser>(
   email: string,
   keys: Key[] = [
-    'id',
+    '_id',
     'email',
     'name',
     'phone',
-    'password',
     'role',
+    'shippingInfo',
     'createdAt',
     'updatedAt'
   ] as Key[]
@@ -81,7 +94,7 @@ const getUserByEmail = async <Key extends keyof IUser>(
 const updateUserById = async <Key extends keyof IUser>(
   userId: string,
   updateBody: Partial<IUser>,
-  keys: Key[] = ['id', 'name', 'email'] as Key[]
+  keys: Key[] = ['_id', 'name', 'email', 'phone', 'shippingInfo'] as Key[]
 ): Promise<Pick<IUser, Key> | null> => {
   const user = await getUserById(userId);
   if (!user) {

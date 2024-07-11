@@ -17,10 +17,9 @@ const getUser = catchAsync(async (req, res) => {
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
-  if (reqUser && reqUser.role === 'user' && reqUser.id !== user.id) {
+  if (reqUser && reqUser.role === 'user' && reqUser._id.toString() !== user._id.toString()) {
     throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden action. Access denied.');
   }
-  exclude(user, ['password']);
   res.send(user);
 });
 
@@ -31,7 +30,7 @@ const updateUser = catchAsync(async (req, res) => {
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
-  if (reqUser && reqUser.role === 'user' && reqUser.id !== user.id) {
+  if (reqUser && reqUser.role === 'user' && reqUser._id.toString() !== user._id.toString()) {
     throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden action. Access denied.');
   }
 

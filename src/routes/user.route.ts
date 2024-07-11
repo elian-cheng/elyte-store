@@ -150,7 +150,7 @@ router.route('/').get(
 router
   .route('/:userId')
   .get(
-    auth(Role.ADMIN),
+    auth(),
     validate(userValidation.getUser),
     userController.getUser
     /*
