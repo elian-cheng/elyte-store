@@ -4,6 +4,7 @@ const tags = require('./src/docs/tags.ts');
 const tokenSchema = require('./src/docs/schemas/token.schema.ts');
 const userSchema = require('./src/docs/schemas/user.schema.ts');
 const productSchema = require('./src/docs/schemas/product.schema.ts');
+const orderSchema = require('./src/docs/schemas/order.schema.ts');
 
 const doc = {
   info: {
@@ -31,6 +32,7 @@ const doc = {
       Token: tokenSchema,
       User: userSchema,
       Product: productSchema,
+      Order: orderSchema,
       ApiError: apiErrorSchema
     }
   }

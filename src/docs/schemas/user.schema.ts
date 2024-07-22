@@ -1,5 +1,5 @@
 const userSchema = {
-  $id: 1,
+  $_id: 1,
   $name: 'John Doe',
   $email: 'john.doe@example.com',
   $jobTitle: 'Software Engineer',

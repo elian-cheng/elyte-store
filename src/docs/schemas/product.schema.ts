@@ -1,5 +1,5 @@
 const productSchema = {
-  $id: 1,
+  $_id: 1,
   $code: 'BP3-4DA',
   $series: 'BP',
   postfix: 'DA',

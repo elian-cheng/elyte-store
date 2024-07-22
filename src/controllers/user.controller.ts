@@ -2,7 +2,6 @@ import httpStatus from 'http-status';
 import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/catchAsync';
 import { userService } from '../services';
-import exclude from '../utils/exclude';
 import { IUser } from '../models/User';
 
 const getUsers = catchAsync(async (req, res) => {
