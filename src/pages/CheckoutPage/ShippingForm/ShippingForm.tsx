@@ -67,7 +67,6 @@ const ShippingForm: FC<IShippingFormProps> = ({ onNext }) => {
       name: '',
     },
   });
-  console.log('currentUser', currentUser);
   useEffect(() => {
     if (!isLoading && !isError && currentUser) {
       reset({
@@ -85,7 +84,6 @@ const ShippingForm: FC<IShippingFormProps> = ({ onNext }) => {
   }, [currentUser, isLoading, isError, reset]);
 
   const onSubmit: SubmitHandler<IFormData> = async (data) => {
-    console.log('data', data);
     if (!userId) return;
     const updateUserData = {
       id: userId,

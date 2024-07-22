@@ -117,7 +117,6 @@ const CatalogPage = () => {
 
   const handleSearchSubmit = () => {
     const pagination = { _page: page, _limit: ITEMS_PER_PAGE };
-    console.log({ searchQuery });
     dispatch(
       getCatalogProducts({ filter, sort, pagination, search: searchQuery })
     );
@@ -135,7 +134,6 @@ const CatalogPage = () => {
   const handleSort = (option: string) => {
     const [sort, order] = option.split('-');
     const sorting = { _sort: sort, _order: order };
-    console.log({ sort });
     setSort(sorting);
   };
 

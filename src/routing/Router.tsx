@@ -19,6 +19,8 @@ import DashboardPage from 'pages/DashboardPage/DashboardPage';
 import CartPage from 'pages/CartPage/CartPage';
 import CheckoutPage from 'pages/CheckoutPage/CheckoutPage';
 import CompletedOrderPage from 'pages/CompletedOrderPage/CompletedOrderPage';
+import OrdersPage from 'pages/OrdersPage/OrdersPage';
+import MyOrdersPage from 'pages/MyOrdersPage/MyOrdersPage';
 
 const Router = () => {
   const { user } = useAuth();
@@ -43,11 +45,14 @@ const Router = () => {
         />
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
         <Route path="reset-password" element={<ResetPasswordPage />} />
-        {/* <Route
-          path="app"
-          element={user ? <QuotePage /> : <Navigate to="/" replace />}
-        /> */}
+        <Route
+          path="my-orders"
+          element={user ? <MyOrdersPage /> : <Navigate to="/" replace />}
+        />
         {user === Role.ADMIN && <Route path="users" element={<UsersPage />} />}
+        {user === Role.ADMIN && (
+          <Route path="orders" element={<OrdersPage />} />
+        )}
         {user === Role.ADMIN && (
           <Route path="app" element={<DashboardPage />} />
         )}

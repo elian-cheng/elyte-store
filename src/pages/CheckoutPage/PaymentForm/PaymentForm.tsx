@@ -10,7 +10,6 @@ import {
 } from '@stripe/react-stripe-js';
 import toast from 'react-hot-toast';
 
-// import { createOrder, clearErrors } from '../../actions/orderAction';
 interface IPaymentFormProps {
   onBack: () => void;
   clientSecret: string;
@@ -22,24 +21,15 @@ const REDIRECT_URL =
     : import.meta.env.VITE_PRODUCTION_SITE_URL;
 
 const PaymentForm: FC<IPaymentFormProps> = ({ onBack, clientSecret }) => {
-  const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
-  const payBtn = useRef<HTMLButtonElement>(null!);
-
-  const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const { userData, cartItems, totalAmount } = useAppSelector(
     (state) => state.cart
   );
 
-  const order = {
-    shippingInfo: userData?.shippingInfo,
-    orderItems: cartItems,
-    totalPrice: totalAmount,
-    paymentInfo: {},
-  };
+  console.log('userData', userData);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

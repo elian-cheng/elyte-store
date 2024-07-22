@@ -8,12 +8,20 @@ export const MANAGER_NAV: INavigation[] = [
     name: 'Users',
     url: '/users',
   },
+  {
+    name: 'Orders',
+    url: '/orders',
+  },
 ];
 
 export const MANAGER_NAV_MOBILE: INavigation[] = [
   {
     name: 'Users',
     url: '/users',
+  },
+  {
+    name: 'Orders',
+    url: '/orders',
   },
   {
     name: 'Products',

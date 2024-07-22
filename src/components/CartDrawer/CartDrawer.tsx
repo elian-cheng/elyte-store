@@ -25,7 +25,6 @@ const CartDrawer: React.FC = () => {
   const { totalQuantity, totalAmount, cartItems } = useAppSelector(
     (state) => state.cart
   );
-  console.log(totalQuantity);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 

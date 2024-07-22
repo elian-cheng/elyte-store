@@ -32,6 +32,7 @@ const initialState: ICartState = {
   cartItems: storage.getItem('cartItems') || [],
   totalQuantity: (storage.getItem('totalQuantity') as number) || 0,
   totalAmount: (storage.getItem('totalAmount') as number) || 0,
+  userData: storage.getItem('userData') || undefined,
 };
 
 const cartSlice = createSlice({
@@ -42,9 +43,11 @@ const cartSlice = createSlice({
       state.cartItems = [];
       state.totalAmount = 0;
       state.totalQuantity = 0;
+      state.userData = undefined;
       storage.removeItem('cartItems');
       storage.removeItem('totalAmount');
       storage.removeItem('totalQuantity');
+      storage.removeItem('userData');
     },
     addItemToCart(state, action: PayloadAction<ICartItem>) {
       const newItem = action.payload;
@@ -100,6 +103,7 @@ const cartSlice = createSlice({
     },
     setShippingInfo(state, action: PayloadAction<IUserData>) {
       state.userData = action.payload;
+      storage.setItem('userData', action.payload);
     },
   },
 });

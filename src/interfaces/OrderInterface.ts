@@ -1,4 +1,6 @@
-interface IOrderItem {
+import { IUserData } from './UserInterface';
+
+export interface IOrderItem {
   id: string;
   title: string;
   image: string;
@@ -8,6 +10,17 @@ interface IOrderItem {
 
 export interface IOrderUpdate {
   status: string;
+}
+
+export interface IOrderShort {
+  id: string;
+  userData: IUserData;
+  orderItems: IOrderItem[];
+  totalPrice: number;
+  orderStatus: string;
+  paidAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IOrderCreate {
@@ -29,7 +42,7 @@ export interface IOrderCreate {
     stripeId: string;
     status: string;
   };
-  totalPrice: number;
+  totalPrice: string | number;
   orderStatus: string;
   paidAt: Date;
 }

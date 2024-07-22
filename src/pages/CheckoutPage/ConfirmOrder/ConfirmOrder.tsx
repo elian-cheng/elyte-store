@@ -50,7 +50,7 @@ const OrderSummaryBox = styled(Box)(({ theme }) => ({
 }));
 
 const ConfirmOrder: FC<IConfirmOrderProps> = ({ onNext, onBack }) => {
-  const { totalQuantity, totalAmount, cartItems, userData } = useAppSelector(
+  const { totalAmount, cartItems, userData } = useAppSelector(
     (state) => state.cart
   );
 
@@ -66,13 +66,7 @@ const ConfirmOrder: FC<IConfirmOrderProps> = ({ onNext, onBack }) => {
     }`;
   }
   const proceedToPayment = () => {
-    const data = {
-      totalAmount,
-      totalQuantity,
-    };
-    console.log(data);
     onNext();
-    // history.push('/process/payment');
   };
 
   return (

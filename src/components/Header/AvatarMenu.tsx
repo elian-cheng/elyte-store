@@ -2,10 +2,13 @@ import { Avatar, Box, Menu } from '@mui/material';
 import { useState } from 'react';
 import useLogout from 'hooks/useLogout';
 import SettingsIcon from '@mui/icons-material/Settings';
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { MenuItem, styled } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import Colors from 'theme/colors';
+import { useAuth } from 'store/context/authContext';
+import { Role } from 'utils/constants';
 
 export const NavLinkStyled = styled(NavLink)`
   font-size: 14px;
@@ -27,6 +30,8 @@ const AvatarMenu = () => {
   const logout = useLogout();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const isOpen = !!anchorEl;
+  const { user } = useAuth();
+  const isAdmin = user && user === Role.ADMIN;
 
   return (
     <Box>
@@ -54,6 +59,20 @@ const AvatarMenu = () => {
             My Profile
           </MenuItemStyled>
         </NavLinkStyled>
+
+        {!isAdmin && (
+          <NavLinkStyled to="/my-orders">
+            <MenuItemStyled>
+              <ShoppingBasketIcon
+                sx={{
+                  color: Colors.PRIMARY_DARK,
+                  marginRight: '10px',
+                }}
+              />
+              My Orders
+            </MenuItemStyled>
+          </NavLinkStyled>
+        )}
 
         <MenuItemStyled onClick={() => logout()}>
           <LogoutIcon

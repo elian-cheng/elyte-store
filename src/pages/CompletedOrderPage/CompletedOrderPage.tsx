@@ -4,9 +4,10 @@ import { Box, Typography, Button } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import { loadStripe } from '@stripe/stripe-js';
-import { useAppSelector } from 'hooks/redux';
+import { useAppDispatch, useAppSelector } from 'hooks/redux';
 import { createOrder } from 'api/orders';
 import toast from 'react-hot-toast';
+import { replaceCart } from 'store/redux/cartSlice';
 
 const stripeApiKey = (import.meta.env.VITE_STRIPE_PUBLIC_KEY as string) || '';
 const stripePromise = loadStripe(stripeApiKey);
@@ -15,15 +16,17 @@ const CompletedOrderPage: React.FC = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const clientSecret = queryParams.get('session_id');
+  const dispatch = useAppDispatch();
 
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
+  const [orderCreated, setOrderCreated] = useState<boolean>(false);
 
   const { userData, cartItems, totalAmount } = useAppSelector(
     (state) => state.cart
   );
 
   useEffect(() => {
-    if (clientSecret) {
+    if (clientSecret && !orderCreated) {
       const checkPaymentStatus = async () => {
         try {
           const stripe = await stripePromise;
@@ -33,22 +36,25 @@ const CompletedOrderPage: React.FC = () => {
           switch (paymentIntent?.status) {
             case 'succeeded':
               setPaymentStatus('success');
-              if (!userData || !cartItems || !totalAmount) return;
-              const order = {
-                userData: userData,
-                orderItems: cartItems,
-                totalPrice: totalAmount,
-                paymentInfo: {
-                  stripeId: paymentIntent.id,
-                  status: paymentIntent.status,
-                },
-                orderStatus: 'Paid',
-                paidAt: new Date(),
-              };
-              try {
-                await createOrder(order);
-              } catch (error) {
-                toast.error('Failed to create order');
+              if (userData && cartItems && totalAmount) {
+                const order = {
+                  userData: userData,
+                  orderItems: cartItems,
+                  totalPrice: totalAmount,
+                  paymentInfo: {
+                    stripeId: paymentIntent.id,
+                    status: paymentIntent.status,
+                  },
+                  orderStatus: 'Paid',
+                  paidAt: new Date(),
+                };
+                try {
+                  await createOrder(order);
+                  setOrderCreated(true); // Set orderCreated to true
+                  dispatch(replaceCart());
+                } catch (error) {
+                  toast.error('Failed to create order');
+                }
               }
               break;
             case 'processing':
@@ -67,11 +73,10 @@ const CompletedOrderPage: React.FC = () => {
       };
 
       checkPaymentStatus();
-    } else {
+    } else if (!clientSecret) {
       setPaymentStatus('failed');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clientSecret]);
+  }, [clientSecret, userData, cartItems, totalAmount, dispatch, orderCreated]);
 
   return (
     <Box
