@@ -2323,6 +2323,10 @@
                 "orderStatus": {
                   "type": "string",
                   "example": "Order Status"
+                },
+                "paidAt": {
+                  "type": "string",
+                  "example": "Payment Date"
                 }
               }
             }

@@ -164,7 +164,7 @@ router
 router
   .route('/:orderId')
   .get(
-    auth(),
+    auth(Role.ADMIN),
     validate(orderValidation.getOrder),
     orderController.getOrder
     /*

@@ -3,6 +3,7 @@ import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/catchAsync';
 import logger from '../config/logger';
 import { orderService } from '../services';
+import { IUser } from '../models/User';
 
 const createOrder = catchAsync(async (req, res) => {
   const { userData, orderItems, shippingInfo, paymentInfo, totalPrice, orderStatus, paidAt } =
@@ -21,14 +22,8 @@ const createOrder = catchAsync(async (req, res) => {
 });
 
 const getOrders = catchAsync(async (req, res) => {
-  const { _page, _limit, user, _sort, _order } = req.query;
-  const orders = await orderService.getOrders(
-    _page ? +_page : undefined,
-    _limit ? +_limit : undefined,
-    user as string,
-    _sort as string,
-    _order as string
-  );
+  const user = req.user as IUser;
+  const orders = await orderService.getOrders(user._id);
   res.status(httpStatus.OK).send(orders);
 });
 
@@ -47,16 +42,8 @@ const getOrder = catchAsync(async (req, res) => {
 });
 
 const updateOrder = catchAsync(async (req, res) => {
-  const { userData, orderItems, paymentInfo, totalPrice, orderStatus, paidAt } = req.body;
-  const order = await orderService.updateOrderById(
-    req.params.orderId,
-    userData,
-    orderItems,
-    paymentInfo,
-    totalPrice,
-    orderStatus,
-    paidAt
-  );
+  const { status } = req.body;
+  const order = await orderService.updateOrderById(req.params.orderId, status);
   if (!order) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
   }

@@ -1,7 +1,6 @@
 import httpStatus from 'http-status';
 import ApiError from '../utils/ApiError';
 import Order, { IOrder } from '../models/Order';
-import { SortOrder } from 'mongoose';
 
 /**
  * Create an order
@@ -18,11 +17,20 @@ const createOrder = async (
   userData: object,
   shippingInfo: object,
   orderItems: object[],
-  paymentInfo: object,
+  paymentInfo: { stripeId: string; status: string },
   totalPrice: number,
   orderStatus: string,
   paidAt: Date
 ): Promise<IOrder> => {
+  // Check if an order with the same stripeId already exists
+  const existingOrder = await Order.findOne({
+    'paymentInfo.stripeId': paymentInfo.stripeId
+  }).exec();
+  if (existingOrder) {
+    return existingOrder; // Return the existing order
+  }
+
+  // Create a new order
   const order = new Order({
     userData,
     shippingInfo,
@@ -32,46 +40,18 @@ const createOrder = async (
     orderStatus,
     paidAt
   });
+
   return await order.save();
 };
 
 /**
  * Get orders
+ * @param {string} userId
  * @returns {Promise<IOrder[]>}
  */
-const getOrders = async (
-  _page: number = 1,
-  _limit: number = 12,
-  user?: string,
-  _sort?: string,
-  _order?: string
-): Promise<{ data: IOrder[]; totalDocs: number }> => {
-  let condition: any = {};
-
-  if (user) {
-    condition = { ...condition, 'userData.id': user };
-  }
-
-  let query = Order.find(condition);
-  let totalOrdersQuery = Order.find(condition);
-
-  if (_sort && _order) {
-    query = query.sort({ [_sort]: _order as SortOrder });
-  }
-
-  const totalDocs = await totalOrdersQuery.countDocuments().exec();
-
-  if (_page && _limit) {
-    const pageSize = _limit;
-    const page = _page;
-    query = query.skip(pageSize * (page - 1)).limit(pageSize);
-  }
-
-  const docs = await query.exec();
-  return {
-    data: docs,
-    totalDocs
-  };
+const getOrders = async (userId: string): Promise<IOrder[]> => {
+  const condition = { 'userData.id': userId };
+  return await Order.find(condition).exec();
 };
 
 /**
@@ -79,17 +59,17 @@ const getOrders = async (
  * @returns {Promise<IOrder[]>}
  */
 const getOrdersAdmin = async (): Promise<IOrder[]> => {
-  return await Order.find().populate('userData.id', 'name email').exec();
+  return await Order.find().exec();
 };
 
 /**
  * Get order by id
- * @param {number} id
+ * @param {string} id
  * @param {Array<Key>} keys
  * @returns {Promise<Pick<IOrder, Key> | null>}
  */
 const getOrderById = async <Key extends keyof IOrder>(
-  id: number,
+  id: string,
   keys: Key[] = [
     '_id',
     'userData',
@@ -107,28 +87,15 @@ const getOrderById = async <Key extends keyof IOrder>(
 
 /**
  * Update order by id
- * @param {number} orderId
- * @param {object} updateData
+ * @param {string} orderId
+ * @param {string} status
  * @returns {Promise<IOrder>}
  */
-const updateOrderById = async (
-  orderId: number,
-  userData?: object,
-  orderItems?: object[],
-  paymentInfo?: object,
-  totalPrice?: number,
-  orderStatus?: string,
-  paidAt?: Date
-): Promise<IOrder> => {
+const updateOrderById = async (orderId: number, status: string): Promise<IOrder> => {
   const order = await Order.findByIdAndUpdate(
     orderId,
     {
-      userData,
-      orderItems,
-      paymentInfo,
-      totalPrice,
-      orderStatus,
-      paidAt
+      orderStatus: status
     },
     { new: true }
   );

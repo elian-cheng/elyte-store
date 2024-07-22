@@ -52,12 +52,7 @@ export default {
       orderId: Joi.string().required()
     }),
     body: Joi.object({
-      userData: userDataSchema.optional(),
-      orderItems: Joi.array().items(orderItemsSchema).optional(),
-      paymentInfo: paymentInfoSchema.optional(),
-      totalPrice: Joi.number().optional(),
-      orderStatus: Joi.string().optional(),
-      paidAt: Joi.date().optional()
+      status: Joi.string().required()
     })
   },
   deleteOrder: {

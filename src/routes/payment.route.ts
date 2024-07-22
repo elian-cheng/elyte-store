@@ -9,7 +9,6 @@ const router = express.Router();
 
 router.post(
   '/process',
-  auth(),
   validate(paymentValidation.processPayment),
   paymentController.createPaymentIntent
   /*
