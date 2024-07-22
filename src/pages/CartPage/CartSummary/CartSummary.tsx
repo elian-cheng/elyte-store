@@ -142,7 +142,7 @@ const CartSummary = (props: ISummaryCart) => {
         <Box>Summary</Box>
         <Box>Products: {props.totalQuantity}</Box>
         <Box>{implementedDiscountFunc(implementedDiscount)}</Box>
-        <Grid container spacing={1} alignItems="center" justifyContent="center">
+        {/* <Grid container spacing={1} alignItems="center" justifyContent="center">
           <Grid item>PromoCode</Grid>
           <Grid item>
             <Input
@@ -152,14 +152,14 @@ const CartSummary = (props: ISummaryCart) => {
               value={inputValue}
             />
           </Grid>
-        </Grid>
-        <Box>
+        </Grid> */}
+        {/* <Box>
           Promo to test:
           {promoToTest.map((item, index) => (
             <Box key={index}>{item}</Box>
           ))}
           {isPromoFunc(isPromo)}
-        </Box>
+        </Box> */}
         <Button
           variant="contained"
           color="secondary"
@@ -173,7 +173,7 @@ const CartSummary = (props: ISummaryCart) => {
           variant="contained"
           color="primary"
           sx={{
-            mt: '1rem',
+            mt: '0.5rem',
           }}
           onClick={clearCartHandler}
         >

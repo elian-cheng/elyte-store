@@ -18,6 +18,7 @@ import CatalogProductPage from 'pages/CatalogProductPage/CatalogProductPage';
 import DashboardPage from 'pages/DashboardPage/DashboardPage';
 import CartPage from 'pages/CartPage/CartPage';
 import CheckoutPage from 'pages/CheckoutPage/CheckoutPage';
+import CompletedOrderPage from 'pages/CompletedOrderPage/CompletedOrderPage';
 
 const Router = () => {
   const { user } = useAuth();
@@ -29,7 +30,9 @@ const Router = () => {
         <Route path="catalog" element={<CatalogPage />} />
         <Route path="catalog/:id" element={<CatalogProductPage />} />
         <Route path="cart" element={<CartPage />} />
+
         <Route path="checkout" element={<CheckoutPage />} />
+        <Route path="completed-order" element={<CompletedOrderPage />} />
         <Route
           path="login"
           element={!user ? <LoginPage /> : <Navigate to="/" replace />}

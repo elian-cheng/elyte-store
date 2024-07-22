@@ -88,6 +88,7 @@ const ShippingForm: FC<IShippingFormProps> = ({ onNext }) => {
     console.log('data', data);
     if (!userId) return;
     const updateUserData = {
+      id: userId,
       name: data.name,
       phone: data.phone,
       shippingInfo: {
