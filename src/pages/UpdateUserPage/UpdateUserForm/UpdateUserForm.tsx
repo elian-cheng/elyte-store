@@ -9,7 +9,6 @@ import {
 import WestIcon from '@mui/icons-material/West';
 import Loader from 'components/Loader/Loader';
 import useGetUserProfile from 'hooks/useGetUserProfile';
-import { IUserMutation } from 'interfaces/UserInterface';
 import { Resolver, SubmitHandler, useForm } from 'react-hook-form';
 import { updateUserProfileSchema } from 'utils/validation/users';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -26,6 +25,17 @@ import ChangeRoleAdminForm from 'components/ProfileForm/ChangeRoleAdminForm';
 import Colors from 'theme/colors';
 import useUpdateUserProfile from 'hooks/useUpdateUserProfile';
 
+export interface IUserUpdateForm {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  zip: string;
+  country: string;
+  state: string;
+}
+
 const UpdateUserForm = () => {
   const { id } = useParams();
   const userId = id ? id : null;
@@ -35,6 +45,8 @@ const UpdateUserForm = () => {
   const navigate = useNavigate();
   const [modalIsShown, setModalIsShown] = useState(false);
   const [modalType, setModalType] = useState<'password' | 'role'>('password');
+  const [country, setCountry] = useState('');
+  const [state, setState] = useState('');
 
   const handleModal = () => {
     setModalIsShown((open) => !open);
@@ -54,14 +66,19 @@ const UpdateUserForm = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<IUserMutation>({
+  } = useForm<IUserUpdateForm>({
     defaultValues: {
       name: '',
       email: '',
       phone: '',
+      address: '',
+      city: '',
+      zip: '',
+      country: '',
+      state: '',
     },
     mode: 'onBlur',
-    resolver: yupResolver(updateUserProfileSchema) as Resolver<IUserMutation>,
+    resolver: yupResolver(updateUserProfileSchema) as Resolver<IUserUpdateForm>,
     shouldUseNativeValidation: false,
   });
 
@@ -71,15 +88,34 @@ const UpdateUserForm = () => {
         name: currentUser.name || '',
         email: currentUser.email || '',
         phone: currentUser.phone || '',
+        address: currentUser?.shippingInfo?.address || '',
+        city: currentUser?.shippingInfo?.city || '',
+        zip: currentUser?.shippingInfo?.zip || '',
+        country: currentUser?.shippingInfo?.country || '',
+        state: currentUser?.shippingInfo?.state || '',
       });
+      setCountry(currentUser?.shippingInfo?.country || '');
+      setState(currentUser?.shippingInfo?.state || '');
     }
   }, [currentUser, isLoading, isError, reset]);
 
-  const onSubmit: SubmitHandler<IUserMutation> = async (
-    data: IUserMutation
+  const onSubmit: SubmitHandler<IUserUpdateForm> = async (
+    data: IUserUpdateForm
   ) => {
     if (!userId) return;
-    await updateUserMutation.mutateAsync({ id: userId, body: data });
+    const updateUserData = {
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      shippingInfo: {
+        address: data.address,
+        city: data.city,
+        country: data.country,
+        state: data?.state || '',
+        zip: data.zip,
+      },
+    };
+    await updateUserMutation.mutateAsync({ id: userId, body: updateUserData });
     navigate('/users');
   };
 
@@ -122,7 +158,14 @@ const UpdateUserForm = () => {
       >
         <Box>
           <form noValidate onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-            <UserInfoForm register={register} errors={errors} />
+            <UserInfoForm
+              register={register}
+              errors={errors}
+              currentCountry={country}
+              setCountry={setCountry}
+              currentState={state}
+              setState={setState}
+            />
             <Divider
               orientation={'horizontal'}
               sx={{

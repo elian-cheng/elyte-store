@@ -15,17 +15,17 @@ const discountKeyToStore = 'discountAmount';
 
 const CartSummary = (props: ISummaryCart) => {
   const dispatch = useAppDispatch();
-  const [isPromo, setIsPromo] = useState<boolean[]>(
-    promoToTest.map(() => false)
-  );
+  // const [isPromo, setIsPromo] = useState<boolean[]>(
+  //   promoToTest.map(() => false)
+  // );
   const [implementedDiscount, setImplementedDiscount] = useState<string[]>(
     (localStorage.getItem(discountKeyToStore || '{}') &&
       JSON.parse(localStorage?.getItem(discountKeyToStore || '{}') || '')) ||
       []
   );
   // const [inputValue, setInputValue] = useState<string>('');
-  const falsePromoArr = promoToTest.map(() => false);
-  const discountItemIndex = isPromo.indexOf(true);
+  // const falsePromoArr = promoToTest.map(() => false);
+  // const discountItemIndex = isPromo.indexOf(true);
   const tempImplementedDiscount = [...implementedDiscount];
 
   const clearCartHandler = () => {
