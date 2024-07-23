@@ -5,6 +5,10 @@ interface INavigation {
 
 export const MANAGER_NAV: INavigation[] = [
   {
+    name: 'Dashboard',
+    url: '/app',
+  },
+  {
     name: 'Users',
     url: '/users',
   },
@@ -15,6 +19,10 @@ export const MANAGER_NAV: INavigation[] = [
 ];
 
 export const MANAGER_NAV_MOBILE: INavigation[] = [
+  {
+    name: 'Dashboard',
+    url: '/app',
+  },
   {
     name: 'Users',
     url: '/users',

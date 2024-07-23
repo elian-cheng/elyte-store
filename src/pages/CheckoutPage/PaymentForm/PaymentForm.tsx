@@ -29,8 +29,6 @@ const PaymentForm: FC<IPaymentFormProps> = ({ onBack, clientSecret }) => {
     (state) => state.cart
   );
 
-  console.log('userData', userData);
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
