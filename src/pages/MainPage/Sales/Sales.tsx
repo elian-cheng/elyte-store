@@ -3,7 +3,7 @@ import './Sales.scss';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import { useNavigate } from 'react-router-dom';
-import salesData from '../../../data/sales.json';
+import salesData from '../../../data/sales';
 import { Box, Button } from '@mui/material';
 
 const Sales = () => {

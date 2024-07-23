@@ -8,7 +8,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { useEffect, useState, useRef } from 'react';
-import advantagesData from '../../../data/advantages.json';
+import advantagesData from '../../../data/advantages';
 import AdvantageCard from './AdvantageCard';
 
 const StyledSection = styled(Box)(({ theme }) => ({

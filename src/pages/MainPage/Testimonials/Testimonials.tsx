@@ -2,7 +2,7 @@ import { Box, Rating, styled, Typography } from '@mui/material';
 import Image from 'mui-image';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Keyboard } from 'swiper/modules';
-import testimonialsData from '../../../data/testimonials.json';
+import testimonialsData from '../../../data/testimonials';
 import Colors from 'theme/colors';
 import './Testimonials.scss';
 
