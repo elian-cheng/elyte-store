@@ -2713,17 +2713,9 @@
           "role": {
             "type": "string",
             "enum": [
-              "CORPORATE_ADMIN",
-              "COUNTRY_ADMIN",
+              "ADMIN",
+              "USER",
               "SELLER"
-            ]
-          },
-          "country": {
-            "type": "string",
-            "enum": [
-              "USA",
-              "Mexico",
-              "Chile"
             ]
           },
           "expires": {
@@ -2738,7 +2730,6 @@
         "required": [
           "type",
           "role",
-          "country",
           "expires",
           "token"
         ],
@@ -2761,53 +2752,17 @@
             "type": "string",
             "example": "john.doe@example.com"
           },
-          "jobTitle": {
-            "type": "string",
-            "example": "Software Engineer"
-          },
-          "mobilePhone": {
-            "type": "string",
-            "example": "12345678901"
-          },
-          "officePhone": {
+          "phone": {
             "type": "string",
             "example": "12345678901"
           },
           "role": {
             "type": "string",
             "enum": [
-              "CORPORATE_ADMIN",
-              "COUNTRY_ADMIN",
+              "ADMIN",
+              "USER",
               "SELLER"
             ]
-          },
-          "currency": {
-            "type": "string",
-            "enum": [
-              "USD",
-              "MXN",
-              "CLP"
-            ]
-          },
-          "country": {
-            "type": "string",
-            "enum": [
-              "USA",
-              "Mexico",
-              "Chile"
-            ]
-          },
-          "pdfNotes": {
-            "type": "string",
-            "example": "Test Notes"
-          },
-          "pdfConditions": {
-            "type": "string",
-            "example": "Test Conditions"
-          },
-          "pdfFooter": {
-            "type": "string",
-            "example": "Test Footer"
           },
           "tokens": {
             "type": "array",
@@ -2828,11 +2783,8 @@
           "_id",
           "name",
           "email",
-          "jobTitle",
-          "mobilePhone",
+          "phone",
           "role",
-          "currency",
-          "country",
           "tokens",
           "isBanned"
         ],

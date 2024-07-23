@@ -3,10 +3,7 @@ const tokenSchema = {
     '@enum': ['ACCESS', 'REFRESH', 'RESET_PASSWORD']
   },
   $role: {
-    '@enum': ['CORPORATE_ADMIN', 'COUNTRY_ADMIN', 'SELLER']
-  },
-  $country: {
-    '@enum': ['USA', 'Mexico', 'Chile']
+    '@enum': ['ADMIN', 'USER', 'SELLER']
   },
   $expires: '2020-05-12T16:18:04.793Z',
   $token:
