@@ -1,10 +1,14 @@
-import { Container, Typography } from '@mui/material';
+import Sales from './Sales/Sales';
+import Advantages from './Advantages/Advantages';
+import Testimonials from './Testimonials/Testimonials';
 
 const MainPage = () => {
   return (
-    <Container>
-      <Typography variant="h2">Main</Typography>
-    </Container>
+    <>
+      <Sales />
+      <Advantages />
+      <Testimonials />
+    </>
   );
 };
 export default MainPage;

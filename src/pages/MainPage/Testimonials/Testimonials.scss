@@ -1,0 +1,21 @@
+.testimonials-slider .swiper-wrapper {
+  padding-top: 1rem;
+  padding-bottom: 6.5rem;
+  align-items: center;
+  @media (max-width: 400px) {
+    padding-bottom: 4.5rem;
+  }
+}
+
+.swiper-pagination.swiper-pagination-clickable.swiper-pagination-bullets.swiper-pagination-horizontal {
+  .swiper-pagination-bullet {
+    border: 2px solid #d6a72e;
+    opacity: 1;
+    background: transparent;
+    width: 24px;
+    height: 24px;
+  }
+  .swiper-pagination-bullet.swiper-pagination-bullet-active {
+    background: #d6a72e;
+  }
+}

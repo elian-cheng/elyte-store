@@ -76,18 +76,23 @@ const AuthForm: React.FC<IAuthFormProps> = ({ onNext }) => {
   const onSubmit: SubmitHandler<IFormData> = async (data) => {
     setIsLoading(true);
     try {
-      const res = isLogin
-        ? await loginMutation.mutateAsync(data)
-        : await signUpMutation.mutateAsync(data);
-
+      let res;
       if (isLogin) {
-        localStorage.setItem('access', res?.tokens?.access?.token || '');
-        localStorage.setItem('refresh', res?.tokens?.refresh?.token || '');
+        res = await loginMutation.mutateAsync(data);
+      } else {
+        res = await signUpMutation.mutateAsync(data);
+        if (res) {
+          res = await loginMutation.mutateAsync(data); // Log in after sign-up
+        }
       }
 
-      setUser(getUserRole());
-      setUserId(getUserId());
-      onNext();
+      if (res) {
+        localStorage.setItem('access', res.tokens.access.token || '');
+        localStorage.setItem('refresh', res.tokens.refresh.token || '');
+        setUser(getUserRole());
+        setUserId(getUserId());
+        onNext();
+      }
     } catch (err: unknown) {
       const error = err as AxiosError<{ message: string }>;
       toast.error(
@@ -115,7 +120,7 @@ const AuthForm: React.FC<IAuthFormProps> = ({ onNext }) => {
         borderRadius: '6px',
         width: '95%',
         maxWidth: '35rem',
-        boxShadow: ' 0 1px 4px rgba(0, 0, 0, 0.2)',
+        boxShadow: '0 1px 4px rgba(0, 0, 0, 0.2)',
         backgroundColor: Colors.WHITE,
       }}
     >

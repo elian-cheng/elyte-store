@@ -86,7 +86,6 @@ const ShippingForm: FC<IShippingFormProps> = ({ onNext }) => {
   const onSubmit: SubmitHandler<IFormData> = async (data) => {
     if (!userId) return;
     const updateUserData = {
-      id: userId,
       name: data.name,
       phone: data.phone,
       shippingInfo: {
@@ -99,6 +98,7 @@ const ShippingForm: FC<IShippingFormProps> = ({ onNext }) => {
     };
     const userData = {
       ...updateUserData,
+      id: userId,
       email: currentUser?.email || '',
     };
     if (
