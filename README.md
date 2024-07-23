@@ -1,6 +1,6 @@
-# Ennat project front-end
+# Elyte project front-end
 
-Client part for Ennat project
+Client part for Elyte project
 
 ## Technologies:
 
@@ -37,3 +37,15 @@ Runs tests in console, in browser or with coverage.
 ### `lint`, `prettier`
 
 Runs linting and formatting for all files in `src` folder.
+
+Test users data:
+
+1. Admin
+   https://elyte-store-elian.netlify.app/login/admin
+   username: admin@test.com
+   password: Test1234\*
+
+2. User
+   https://elyte-store-elian.netlify.app/login
+   username: user@gmail.com
+   password: Test1234\*

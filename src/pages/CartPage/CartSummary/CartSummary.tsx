@@ -1,4 +1,4 @@
-import { Box, Button, Input, Paper, Grid } from '@mui/material';
+import { Box, Button, Paper } from '@mui/material';
 import { useAppDispatch } from '../../../hooks/redux';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -23,7 +23,7 @@ const CartSummary = (props: ISummaryCart) => {
       JSON.parse(localStorage?.getItem(discountKeyToStore || '{}') || '')) ||
       []
   );
-  const [inputValue, setInputValue] = useState<string>('');
+  // const [inputValue, setInputValue] = useState<string>('');
   const falsePromoArr = promoToTest.map(() => false);
   const discountItemIndex = isPromo.indexOf(true);
   const tempImplementedDiscount = [...implementedDiscount];
@@ -32,31 +32,31 @@ const CartSummary = (props: ISummaryCart) => {
     dispatch(replaceCart());
   };
 
-  function onChangeHandler(event: React.ChangeEvent<HTMLInputElement>) {
-    const promoCode = event.target.value;
-    const indexOfPromoCode = promoToTest.indexOf(promoCode);
-    if (indexOfPromoCode > -1) {
-      const tempPromoArr = [...isPromo];
-      tempPromoArr[indexOfPromoCode] = true;
-      setIsPromo(tempPromoArr);
-    } else setIsPromo(falsePromoArr);
-    setInputValue(promoCode);
-  }
+  // function onChangeHandler(event: React.ChangeEvent<HTMLInputElement>) {
+  //   const promoCode = event.target.value;
+  //   const indexOfPromoCode = promoToTest.indexOf(promoCode);
+  //   if (indexOfPromoCode > -1) {
+  //     const tempPromoArr = [...isPromo];
+  //     tempPromoArr[indexOfPromoCode] = true;
+  //     setIsPromo(tempPromoArr);
+  //   } else setIsPromo(falsePromoArr);
+  //   setInputValue(promoCode);
+  // }
 
-  function onClickHandler() {
-    if (
-      tempImplementedDiscount.indexOf(promoToTest[discountItemIndex]) === -1
-    ) {
-      tempImplementedDiscount.push(promoToTest[discountItemIndex]);
-    }
-    localStorage.setItem(
-      discountKeyToStore,
-      JSON.stringify(tempImplementedDiscount)
-    );
-    window.dispatchEvent(new Event('discountSet'));
-    setInputValue('');
-    setIsPromo(falsePromoArr);
-  }
+  // function onClickHandler() {
+  //   if (
+  //     tempImplementedDiscount.indexOf(promoToTest[discountItemIndex]) === -1
+  //   ) {
+  //     tempImplementedDiscount.push(promoToTest[discountItemIndex]);
+  //   }
+  //   localStorage.setItem(
+  //     discountKeyToStore,
+  //     JSON.stringify(tempImplementedDiscount)
+  //   );
+  //   window.dispatchEvent(new Event('discountSet'));
+  //   setInputValue('');
+  //   setIsPromo(falsePromoArr);
+  // }
 
   window.addEventListener('discountSet', () => {
     setImplementedDiscount(tempImplementedDiscount);
@@ -78,18 +78,18 @@ const CartSummary = (props: ISummaryCart) => {
     window.dispatchEvent(new Event('discountSet'));
   };
 
-  const isPromoFunc = (props: boolean[]) => {
-    return props.map((item, index) => {
-      if (item) {
-        return (
-          <Box key={index}>
-            {promoToTest[index]} -10%
-            <Button onClick={onClickHandler}>Add</Button>
-          </Box>
-        );
-      }
-    });
-  };
+  // const isPromoFunc = (props: boolean[]) => {
+  //   return props.map((item, index) => {
+  //     if (item) {
+  //       return (
+  //         <Box key={index}>
+  //           {promoToTest[index]} -10%
+  //           <Button onClick={onClickHandler}>Add</Button>
+  //         </Box>
+  //       );
+  //     }
+  //   });
+  // };
 
   const implementedDiscountFunc = (discountArr: string[]) => {
     if (!discountArr[0]) {

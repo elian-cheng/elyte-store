@@ -6,18 +6,18 @@ import {
   MenuItem,
   TextField,
 } from '@mui/material';
-import { IUserMutation } from 'interfaces/UserInterface';
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
 import { SectionTitle } from 'theme/common';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { ROLES } from 'utils/constants';
+import { Role, ROLES } from 'utils/constants';
+import { IUserCreateForm } from 'pages/CreateUserPage/CreateUserForm/CreateUserForm';
 
 interface SecurityInfoFormProps {
-  register: UseFormRegister<IUserMutation>;
+  register: UseFormRegister<IUserCreateForm>;
   errors: FieldErrors;
-  role: string;
-  setRole: React.Dispatch<React.SetStateAction<string>>;
+  role: Role;
+  setRole: React.Dispatch<React.SetStateAction<Role>>;
 }
 
 const SecurityInfoForm: React.FC<SecurityInfoFormProps> = ({
@@ -100,7 +100,7 @@ const SecurityInfoForm: React.FC<SecurityInfoFormProps> = ({
             InputLabelProps={{
               shrink: true,
             }}
-            onChange={(e) => setRole(e.target.value)}
+            onChange={(e) => setRole(e.target.value as Role)}
           >
             {ROLES.map((availableRole) => (
               <MenuItem value={availableRole} key={availableRole}>

@@ -78,6 +78,11 @@ export const createUserProfileSchema = yup.object().shape({
         return yup.string().matches(CHECK_PHONE_SCHEMA).isValidSync(value);
       }
     ),
+  address: yup.string().required('Address is a required field'),
+  city: yup.string().required('City is a required field'),
+  zip: yup.string().required('Zip is a required field'),
+  country: yup.string().required('Country is a required field'),
+  state: yup.string(),
 });
 
 export const updateUserProfileSchema = yup.object().shape({

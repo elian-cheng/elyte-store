@@ -25,6 +25,8 @@ import useUpdateUserProfile from 'hooks/useUpdateUserProfile';
 export interface IUserProfileForm {
   name: string;
   email: string;
+  password?: string;
+  role?: string;
   phone: string;
   address: string;
   city: string;

@@ -1,7 +1,5 @@
-import React, { FC, FormEvent, useRef, useState } from 'react';
+import React, { FC, FormEvent, useState } from 'react';
 import { useAppSelector } from 'hooks/redux';
-import { useNavigate } from 'react-router-dom';
-import { loadStripe } from '@stripe/stripe-js';
 import { Box, Button, Typography } from '@mui/material';
 import {
   PaymentElement,
@@ -25,9 +23,7 @@ const PaymentForm: FC<IPaymentFormProps> = ({ onBack, clientSecret }) => {
   const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
 
-  const { userData, cartItems, totalAmount } = useAppSelector(
-    (state) => state.cart
-  );
+  const { totalAmount } = useAppSelector((state) => state.cart);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

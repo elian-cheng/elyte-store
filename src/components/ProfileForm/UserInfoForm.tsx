@@ -15,9 +15,12 @@ import {
   Public as PublicIcon,
   TransferWithinAStation as TransferWithinAStationIcon,
 } from '@mui/icons-material';
+import { IUserCreateForm } from 'pages/CreateUserPage/CreateUserForm/CreateUserForm';
 
 interface UserInfoFormProps {
-  register: UseFormRegister<IUserProfileForm>;
+  register:
+    | UseFormRegister<IUserProfileForm>
+    | UseFormRegister<IUserCreateForm>;
   errors: FieldErrors;
   readonly?: boolean;
   currentCountry?: string;
